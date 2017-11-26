@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Space-X</title>
+    <!-- Google Material Icons -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <!-- Custom styles -->
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <!-- Navigation bar -->
+    <nav class="navbar">
+      <!-- Navigation branding-->
+      <a class="navbar-brand" href="#home">Space-X</a>
+      <!-- Navigation toggle button -->
+      <button type="button" class="navbar-toggle right">
+        <i class="material-icons">menu</i>
+      </button>
+      <!-- Navigation tabs -->
+      <ul class="navbar-tab right">
+        <li class = "active">
+          <a href = "#home">Home</a>
+        </li>
+        <li>
+          <a href="#vehicles">Vehicles</a>
+        </li>
+        <li>
+          <a href="#launches">Launches</a>
+        </li>
+        <li>
+          <a href="#launchpads">Launchpads</a>
+        </li>
+      </ul>
+    </nav>
+    <!-- Tab views -->
+    <div class="tab-view">
+      <div class="active" id="home">
+      </div>
+      <div id="vehicles">
+        <h2>Vehicles</h2>
+        <ul class="results"></ul>
+      </div>
+      <div id="launches">
+        <h2>Launches</h2>
+        <ul class="results"></ul>
+      </div>
+      <div id="launchpads">
+        <h2>Launchpads</h2>
+        <ul class="results"></ul>
+      </div>
+    </div>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <!-- Custom scripts -->
+    <script src="script.js"></script>
+  </body>
+</html>
