@@ -1,14 +1,5 @@
 $(document).ready(function() {
 
-    const express = require("express");
-
-    const bodyparser = require("body-parser");
-    const methodOverride = require("method-override");
-    const morgan = require('morgan');
-    const cookieParser = require('cookie-parser');
-
-
-
   // Set up navigation toggle button clicks
   $('.navbar-toggle').click(function(e) {
     // Toggle active flag for this button and navigation tabs
