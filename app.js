@@ -3,7 +3,7 @@ const express = require("express");
 const bodyparser = require("body-parser");
 const methodOverride = require("method-override");
 const morgan = require('morgan');
-const cookieParser = require('cookie-parser');
+//const cookieParser = require('cookie-parser');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -11,7 +11,7 @@ const PORT = process.env.PORT || 3000;
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded ({extended: false}));
 app.use(methodOverride("_method"));
-app.use(cookeParser());
+//app.use(cookeParser());
 
 function logger(req, res, next){
     console.log("Cookie Parser: ", req.cookies)
