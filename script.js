@@ -51,10 +51,24 @@ $(document).ready(function() {
     // Get view that corresponds to clicked tab
     var thisView = $(thisTab.children('a').attr('href'));
 
+    var thisID = thisView.get(0).id;
+    var resultList;
+    if (thisID == "vehicles"){
+        resultList = document.getElementById("vresults");
+    }else if (thisID == "launches"){
+        resultList = document.getElementById("lresults");
+    }else{
+        resultList = document.getElementById("lpresults");
+    }
+
+    while (resultList.hasChildNodes()) {
+        resultList.removeChild(resultList.lastChild);
+    }
+
     //Ajax call on click
-    if (thisView.get(0).id == "vehicles"){
+    if (thisID == "vehicles"){
         updateVehicles();
-    }else if (thisView.get(0).id == "launches"){
+    }else if (thisID == "launches"){
         updateLaunches();
     }else{
         updateLaunchpads();
