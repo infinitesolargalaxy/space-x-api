@@ -51,6 +51,7 @@ $(document).ready(function() {
     // Get view that corresponds to clicked tab
     var thisView = $(thisTab.children('a').attr('href'));
 
+    // Remove the results from the previous AJAX call
     var thisID = thisView.get(0).id;
     var resultList;
     if (thisID == "vehicles"){
@@ -65,7 +66,7 @@ $(document).ready(function() {
         resultList.removeChild(resultList.lastChild);
     }
 
-    //Ajax call on click
+    // Ajax call on click to update information and display to screen
     if (thisID == "vehicles"){
         updateVehicles();
     }else if (thisID == "launches"){
