@@ -5,6 +5,9 @@ const methodOverride = require("method-override");
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 
+var MongoClient = require('mongodb').MongoClient
+var url = "mongodb://USER:PWD@ds117316.mlab.com:17316/csc309db"
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -22,6 +25,15 @@ function logger(req, res, next){
     next()
 }
 
+//Just creates database
+//Should probably not use "Teamundefined" as name for database, one of us may have used it for tutorial
+MongoClient.connect(url, function(err,res){
+	if(err) console.log(err)
+	console.log("Database created");
+	db = res								
+});
+
+
 app.use(myLogger)
 app.use(morgan('common'))
 
@@ -35,5 +47,5 @@ app.put();
 app.delete();
 
 app.listen(PORT, () => {
-    console.log(`Sever listening on port ${PORT}`);
+    console.log(`Server listening on port ${PORT}`);
 });
