@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <% include ../head %>
+  <body>
+    <% var active = "launches"; %>
+    <% include ../nav %>
+    <!-- Tab views -->
+    <div class="tab-view">
+      <div id="launches">
+        <h2><%= title %></h2>
+        <ul class="results">
+          <% data.forEach((elem, i) => { %>
+            <li id=<%= elem.flight_number %> class="result">
+              <h3>Launch #<%= elem.flight_number %></h3>
+              <p><%= elem.details %></p>
+              <ul>
+                <li>Vehicle: <a href=<%= "/vehicles/" + elem.rocket.rocket_id %>><%= elem.rocket.rocket_name %></a></li>
+                <li>Launchpad: <a href=<%= "/launchpads/" + elem.launch_site.site_id %>><%= elem.launch_site.site_name_long %></a></li>
+                <li>Date: <%= new Date(elem.launch_date_local).toDateString().slice(4) %></li>
+                <li><%= printProperty(elem, 'launch_success', 'Success', '', '') %></li>
+              </ul>
+            </li>
+          <% }); %>
+        </ul>
+      </div>
+    </div>
+    <% include ../footer %>
+    <% include ../script %>
+  </body>
+</html>

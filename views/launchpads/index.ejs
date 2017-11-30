@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <% include ../head %>
+  <body>
+    <% var active = "launchpads"; %>
+    <% include ../nav %>
+    <!-- Tab views -->
+    <div class="tab-view">
+      <div id="launchpads">
+        <h2><%= title %></h2>
+        <ul class="results">
+          <% data.forEach((elem, i) => { %>
+            <li id=<%= elem.id %> class="result">
+              <h3><%= elem.full_name %></h3>
+              <p><%= elem.details %></p>
+              <ul>
+                <li><%= printProperty(elem, 'status', 'Status', '', '') %></li>
+                <li><%= printProperty(elem.location, 'name', 'Location', '', ', ' + elem.location.region) %></li>
+              </ul>
+              <p><a href=<%= "/launches?launchpad=" + elem.id %>>Launches</a></p>
+            </li>
+          <% }); %>
+        </ul>
+      </div>
+    </div>
+    <% include ../footer %>
+    <% include ../script %>
+  </body>
+</html>

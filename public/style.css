@@ -1,0 +1,220 @@
+*,
+*:after,
+*:before {
+  box-sizing: border-box;  /* More intuitive sizing model */
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  position: relative;
+  padding-top: 50px;  /* Leave space for navigation bar */
+  padding-bottom: 50px;  /* Leave space for footer */
+  margin: 0;  /* Get rid of default margins */
+  background-color: #b3b3b3;
+  min-height: 100%;
+}
+
+ul {
+  /* Get rid of default margins and padding */
+  margin: 0;
+  padding: 0;
+}
+
+li {
+  list-style: none;  /* No bullet */
+}
+
+/* Navigation bar */
+.navbar {
+  position: fixed;  /* Fixed to top of screen */
+  top: 0;
+  left: 0;
+  z-index: 1;  /* Display over content underneath */
+  height: 50px;
+  width: 100%;
+  background-color: #000;
+  color: #fff;
+  line-height: 50px;  /* Centre text vertically */
+}
+
+.navbar a {
+  display: inline-block;
+  padding-left: 15px;
+  padding-right: 15px;
+  color: inherit;
+  text-decoration: none;  /* No underline */
+  vertical-align: top;  /* Fix gap browser puts between inline elements */
+}
+
+/* Navigation bar header */
+.navbar-brand {
+  font-size: 24px;
+}
+
+.navbar-toggle {
+  padding: 12px 15px 11px 15px;
+  background-color: inherit;
+  color: inherit;
+  border: none;
+  cursor: pointer;
+}
+
+/* Navigation bar tabs */
+.navbar-tab {
+  width: 100%;
+  max-height: 0;  /* Do not display initially */
+  overflow-y: hidden;  /* Hide contents */
+  background-color: inherit;
+  transition: all 0.5s ease-in-out;
+}
+
+.navbar-tab.active {
+  max-height: 200px;   /* Display and expand */
+}
+
+.navbar-tab li a {
+  width: 100%;
+  font-size: 18px;
+}
+
+/* Highlight effect */
+.navbar a:hover,
+.navbar-toggle:hover,
+.navbar-toggle.active,
+.navbar-tab li.active {
+  background-color: #333;
+}
+
+/* Tab view */
+.tab-view {
+  padding: 0 15px 5px 15px;
+}
+
+.tab-view > div {
+  -webkit-animation: fadeEffect 1s ease-in-out;
+          animation: fadeEffect 1s ease-in-out;
+}
+
+/* Results */
+.tab-view .result {
+  padding: 15px;
+  margin-bottom: 15px;
+  background-color: #fff;
+  border-radius: 2px;
+}
+
+.tab-view .result h3 {
+  margin-top: 0;
+}
+
+.tab-view .result a {
+  color: #888;
+  text-decoration: none;  /* No underline */
+}
+
+.tab-view .result a:hover {
+  color: inherit;
+  text-decoration: underline;
+}
+
+.tab-view .result > :last-child {
+  margin-bottom: 0;
+}
+
+/* Footer */
+footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background-color: black;
+  color: #fff;
+}
+
+footer p {
+  text-align: center;  /* Center horizontally */
+}
+
+footer a {
+  display: block;
+}
+
+/* Homepage */
+#home {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url(home.png);
+  background-position: center;
+  background-size: cover;
+}
+
+/* Tablet */
+@media (min-width: 768px) {
+  /* Navigation bar */
+  .navbar-toggle {
+    display: none;  /* Hide toggle button */
+  }
+
+  .navbar-tab {
+    /* Display in-line with navbar-brand */
+    position: relative;
+    width: auto;
+    max-height: none;
+  }
+
+  .navbar-tab li {
+    float: left;  /* Horizontal list */
+  }
+
+  /* Tab view results */
+  .tab-view .results {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .tab-view .result {
+    width: 31.9%;  /* Three columns */
+    margin-right: 15px;
+  }
+  
+  .tab-view .result:nth-child(3n) {  /* Every third result */
+    margin-right: 0;
+  }
+
+  /* Footer */
+  footer a {
+    display: inline-block;
+    position: absolute;
+    left: 15px;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+  .tab-view {
+    /* Make use of screen space by centering*/
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* Utility classes */
+.right {
+  float: right;
+}
+
+@-webkit-keyframes fadeEffect {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+
+@keyframes fadeEffect {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}

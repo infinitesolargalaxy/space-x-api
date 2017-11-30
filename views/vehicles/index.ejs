@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <% include ../head %>
+  <body>
+    <% var active = "vehicles"; %>
+    <% include ../nav %>
+    <!-- Tab views -->
+    <div class="tab-view">
+      <div id="vehicles">
+        <h2><%= title %></h2>
+        <ul class="results">
+          <% data.forEach((elem, i) => { %>
+            <li id=<%= elem.id %> class="result">
+              <h3><%= elem.name %></h3>
+              <p><%= elem.description %></p>
+              <ul>
+                <li><%= printProperty(elem, 'active', 'Active', '', '') %></li>
+                <li><%= printProperty(elem, 'first_flight', 'First Flight', '', '') %></li>
+                <li><%= printProperty(elem, 'cost_per_launch', 'Cost Per Launch', '$', '') %></li>
+                <li><%= printProperty(elem, 'success_rate_pct', 'Success Rate', '', '%') %></li>
+              </ul>
+              <p><a href=<%= "/launches?vehicle=" + elem.id %>>Launches</a></p>
+            </li>
+          <% }); %>
+        </ul>
+      </div>
+    </div>
+    <% include ../footer %>
+    <% include ../script %>
+  </body>
+</html>

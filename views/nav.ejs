@@ -1,0 +1,30 @@
+<!-- Navigation bar -->
+<nav class="navbar">
+  <!-- Navigation branding-->
+  <a class="navbar-brand" href="/">Space-X</a>
+  <!-- Navigation toggle button -->
+  <button type="button" class="navbar-toggle right">
+    <i class="material-icons">menu</i>
+  </button>
+  <!-- Navigation tabs -->
+  <ul class="navbar-tab right">
+    <li <% if (active === 'vehicles') { %>class="active"<% } %>>
+      <a href="/vehicles">Vehicles</a>
+    </li>
+    <li <% if (active === 'launches') { %>class="active"<% } %>>
+      <a href="/launches">Launches</a>
+    </li>
+    <li <% if (active === 'launchpads') { %>class="active"<% } %>>
+      <a href="/launchpads">Launchpads</a>
+    </li>
+    <% if (!isLoggedIn) { %>
+      <li <% if (active === 'login') { %>class="active"<% } %>>
+        <a href="/login">Login</a>
+      </li>
+    <% } else { %>
+      <li>
+        <a href="/logout">Logout</a>
+      </li>
+    <% } %>
+  </ul>
+</nav>
