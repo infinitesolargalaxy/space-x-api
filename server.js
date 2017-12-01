@@ -283,6 +283,88 @@ app.route('/api/launchpads/:id')
     })
   });
   
+  //Creating requires a directory
+ app.post('/api', (req, res) => {
+  res.send({
+    links: {
+      vehicles: '/api/vehicles',
+      launches: '/api/launches',
+      launchpads: '/api/launchpads'
+    }
+  });
+ });
+ 
+ app.route('/api/vehicles')
+  .post((req, res) => {
+    addVehicle(req.user, req.params.id, req.body).then(data => {
+      res.send({
+        data: data,
+        links: {
+          vehicle: '/api/vehicles/<id>'
+        }
+      });
+    }).catch(err => {
+      // TODO
+    })
+  });
+ 
+
+//Updating requires individual id
+ app.put('/api', (req, res) => {
+  res.send({
+    links: {
+      vehicles: '/api/vehicles',
+      launches: '/api/launches',
+      launchpads: '/api/launchpads'
+    }
+  });
+ });
+
+ app.route('/api/vehicles/:id')
+  .put((req, res) => {
+    updateVehicle(req.user, req.params.id, req.body).then(data => {
+      res.send({
+        data: data,
+        links: {
+          vehicles: '/api/vehicles',
+          vehicle_launches: '/api/launches?vehicle=' + data.id
+        }
+      });
+    }).catch(err => {
+      // TODO
+    })
+  });
+  
+  app.route('/api/launches/:id')
+  .put((req, res) => {
+    updateLaunch(req.user, req.params.id, req.body).then(data => {
+      res.send({
+        data: data,
+        links: {
+          vehicles: '/api/launch',
+          vehicle_launches: '/api/launches?vehicle=' + data.id
+        }
+      });
+    }).catch(err => {
+      // TODO
+    })
+  });
+  
+ app.route('/api/launchpads/:id')
+  .put((req, res) => {
+    updateLaunchpad(req.user, req.params.id, req.body).then(data => {
+      res.send({
+        data: data,
+        links: {
+          vehicles: '/api/launch',
+          vehicle_launches: '/api/launches?vehicle=' + data.id
+        }
+      });
+    }).catch(err => {
+      // TODO
+    })
+  });
+  
 //Deleting things requires individual id!
 app.delete('/api', (req, res) => {
   res.send({
@@ -493,27 +575,165 @@ function getLaunchpads(user, id) {
   }
 }
 
-//If user is already logged in, 
-function addVehicle(user, id, name, active, cost_per_launch, success_rate_pct, first_flight, description) {
+/*
+Curl tests
+DELETE
+curl -u john:a --request DELETE localhost:3000/api/launches/2
+
+POST
+curl -u john:a -d '{"active": "true", "cost_per_launch" : "1"}' -H "Content-Type: application/json" --request PUT localhost:3000/api/vehicles/falcon9
+curl -u john:a -d '{"launch_success": "true"}' -H "Content-Type: application/json" --request PUT localhost:3000/api/launches/1
+curl -u john:a -d '{"full_name": "Deep Space Nine"}' -H "Content-Type: application/json" --request PUT localhost:3000/api/launchpads/ccafs_slc_40
+
+PUT
+curl -u john:a -d '{"id": "falcon10", "name": "Falcon 10", "cost_per_launch": "100000000000", "success_rate_pct": "100", "first_flight": "2006-03-24",  "active": "true", "description":"The Falcon 10 is next gen"}' -H "Content-Type: application/json" --request POST localhost:3000/api/vehicles/
+*/
+
+//Doesn't seem to work... vehicle/index.ejs throws some error about foreach.
+function addVehicle(user, id, newdata) {
+   console.log(newdata);
   if (user) {  // Logged in
-    // Use database
-    getVehicles(user, id).then(data => {
-      if (data) { //Already exists!
-		  throw new Error("Vehicle with id already exists, use a put request for updating.");
-	  } else {
-		var newdata = JSON.stringify(data.push({id: id, name: name, active: active, cost_per_launch: cost_per_launch, success_rate_pct: success_rate_pct, first_flight: first_flight, description})); //Since getVehicles returns a JSON object array, just append
-		//Make in JSON
-		collection.update({user: user}, {$set: {vehicles: newdata}}).then(res => {
-			console.log(res);
+    if (newdata) {
+		return getVehicles(user).then(data => {
+		  if (data) { //Update stuff
+			
+			//TODO: Add something that checks that newdata is in valid format!
+			return collection.updateOne({user: user}, {$set: {vehicles: JSON.stringify(data.push(newdata))}}).then(res => {
+				console.log(JSON.stringify(data));
+				return JSON.stringify(data);
+			});
+		  } else {
+			console.log("No vehicle with that id found");
+			//TODO: Error handling
+		  }
 		});
+	} else { //Not using -d '{"data": "stuff"}'
 		
-	  }
-    }).catch(err => {
-      // TODO
-    })
+	}
   } else {  // Not logged in
-      throw new Error("Please log in to perform that action.");
-  }
+    console.log("Please log in to perform that action.");
+	//TODO: Error handling
+  } 
+}
+
+//Returns 0 on success and a non-zero number representing the number of errors on failure
+function updateHelper(data, id, attr, newdata) {
+	var err = 0
+	var success = 0
+	data.forEach(function (value, i) {
+		console.log('Index %d', i);
+		if(data[i][attr] == id){
+			for (var key in newdata) {
+				if (newdata.hasOwnProperty(key)) {
+					console.log("Checking if data has key!")
+					//Make sure that our original data already has this data as well
+					//Perhaps we should add check preventing user from changing the id's value?
+					if (data[i].hasOwnProperty(key)) {
+						console.log(key + " -> " + newdata[key]);
+						console.log(key + " -> " + data[key]);
+						//Update the data!
+						data[i][key] = newdata[key]
+						success++;
+					} else {
+						//Can't update a non existing attribute!
+						err++;
+					}
+				}
+			}
+		}
+	});
+	//Check if we actually updated anything
+	if (success == 0) {
+		err++
+	}
+	return err;
+}
+
+function updateVehicle(user, id, newdata) {
+   console.log(newdata);
+  if (user) {  // Logged in
+    if (newdata) {
+		return getVehicles(user).then(data => {
+		  if (data) { //Update stuff
+				var res = updateHelper(data, id, 'id', newdata);
+				if (res == 0) {
+					return collection.updateOne({user: user}, {$set: {vehicles: JSON.stringify(data)}}).then(res => {
+						//console.log(data);
+						return JSON.stringify(data);
+					});
+				} else {
+					//Error handling
+				}
+		  } else {
+			console.log("No vehicle with that id found");
+			//TODO: Error handling
+		  }
+		});
+	} else { //Not using -d '{"data": "stuff"}'
+		
+	}
+  } else {  // Not logged in
+    console.log("Please log in to perform that action.");
+	//TODO: Error handling
+  } 
+}
+
+function updateLaunch(user, id, newdata) {
+   console.log(newdata);
+  if (user) {  // Logged in
+    if (newdata) {
+		return getLaunches(user).then(data => {
+		  if (data) { //Update stuff
+				var res = updateHelper(data, id, 'flight_number', newdata);
+				if (res == 0) {
+					return collection.updateOne({user: user}, {$set: {launches: JSON.stringify(data)}}).then(res => {
+						//console.log(data);
+						return JSON.stringify(data);
+					});
+				} else {
+					//Error handling
+				}
+		  } else {
+			console.log("No launch with that id found");
+			//TODO: Error handling
+		  }
+		});
+	} else { //Not using -d '{"data": "stuff"}'
+		//TODO: Error handling
+	}
+  } else {  // Not logged in
+    console.log("Please log in to perform that action.");
+	//TODO: Error handling
+  } 
+}
+
+function updateLaunchpad(user, id, newdata) {
+   console.log(newdata);
+  if (user) {  // Logged in
+    if (newdata) {
+		return getLaunchpads(user).then(data => {
+		  if (data) { //Update stuff
+				var res = updateHelper(data, id, 'id', newdata);
+				if (res == 0) {
+					return collection.updateOne({user: user}, {$set: {launchpads: JSON.stringify(data)}}).then(res => {
+						//console.log(data);
+						return JSON.stringify(data);
+					});
+				} else {
+					//Error handling
+				}
+		  } else {
+			console.log("No launch with that id found");
+			//TODO: Error handling
+		  }
+		});
+	} else { //Not using -d '{"data": "stuff"}'
+		//TODO: Error handling
+	}
+  } else {  // Not logged in
+    console.log("Please log in to perform that action.");
+	//TODO: Error handling
+  } 
 }
 
 //Takes in the JSON array, id to look for, and the attribute to check with.
@@ -531,6 +751,7 @@ function deleteHelper(data, id, attr) {
 	console.log(found);
 	return found;
 }
+
 function deleteVehicle(user, id) {
   if (user) {  // Logged in
     return getVehicles(user).then(data => {
