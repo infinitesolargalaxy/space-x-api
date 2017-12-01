@@ -75,6 +75,15 @@ app.route('/login')
       if (isAuthorized) {  // Authorized
         res.cookie('user', username);
         res.redirect('/');
+		//TODO: Remove this print
+		db.collection("teamundefined").find({}, {_id: false, launches: false, launchpads: false}).toArray(function (err, res) {
+			if (err) { 
+			console.log(err);
+			} else {
+				console.log("Find:");
+				console.log(res);
+			}
+		});
       } else {  // Unauthorized
         res.sendStatus(401);
       }
@@ -273,7 +282,62 @@ app.route('/api/launchpads/:id')
       // TODO
     })
   });
+  
+//Deleting things requires individual id!
+app.delete('/api', (req, res) => {
+  res.send({
+    links: {
+      vehicles: '/api/vehicles',
+      launches: '/api/launches',
+      launchpads: '/api/launchpads'
+    }
+  });
+});
 
+app.route('/api/vehicles/:id')
+  .delete((req, res) => {
+    deleteVehicle(req.user, req.params.id).then(data => {
+      res.send({
+        data: data,
+        links: {
+          vehicles: '/api/vehicles',
+          vehicle_launches: '/api/launches?vehicle=' + data.id
+        }
+      });
+    }).catch(err => {
+      // TODO
+    })
+  });
+  
+app.route('/api/launches/:id')
+  .delete((req, res) => {
+    deleteLaunch(req.user, req.params.id).then(data => {
+      res.send({
+        data: data,
+        links: {
+          vehicles: '/api/launch',
+          vehicle_launches: '/api/launches?vehicle=' + data.id
+        }
+      });
+    }).catch(err => {
+      // TODO
+    })
+  });
+  
+ app.route('/api/launchpads/:id')
+  .delete((req, res) => {
+    deleteLaunchpad(req.user, req.params.id).then(data => {
+      res.send({
+        data: data,
+        links: {
+          vehicles: '/api/launch',
+          vehicle_launches: '/api/launches?vehicle=' + data.id
+        }
+      });
+    }).catch(err => {
+      // TODO
+    })
+  });
 // ========== Helper function for use in ejs files to format output ==========
 app.locals.printProperty = function(elem, key, keyName, pre, suf) {
   if (elem.hasOwnProperty(key)) {
@@ -428,3 +492,117 @@ function getLaunchpads(user, id) {
     });
   }
 }
+
+//If user is already logged in, 
+function addVehicle(user, id, name, active, cost_per_launch, success_rate_pct, first_flight, description) {
+  if (user) {  // Logged in
+    // Use database
+    getVehicles(user, id).then(data => {
+      if (data) { //Already exists!
+		  throw new Error("Vehicle with id already exists, use a put request for updating.");
+	  } else {
+		var newdata = JSON.stringify(data.push({id: id, name: name, active: active, cost_per_launch: cost_per_launch, success_rate_pct: success_rate_pct, first_flight: first_flight, description})); //Since getVehicles returns a JSON object array, just append
+		//Make in JSON
+		collection.update({user: user}, {$set: {vehicles: newdata}}).then(res => {
+			console.log(res);
+		});
+		
+	  }
+    }).catch(err => {
+      // TODO
+    })
+  } else {  // Not logged in
+      throw new Error("Please log in to perform that action.");
+  }
+}
+
+//Takes in the JSON array, id to look for, and the attribute to check with.
+function deleteHelper(data, id, attr) {
+	var found = 0 //Flag variable
+		data.forEach(function (value, i) {
+		console.log('Index %d %s', i, JSON.stringify(data[i]));
+		if(data[i][attr] == id){
+			//If we simply delete, we will have a null in the deleted entry's index. Thus, we must use splice to correct the array afterwards
+			delete data[i] //Seems to do the same thing even if we didn't delete first.
+			data.splice(i ,1);
+			found = 1
+		}
+	});
+	console.log(found);
+	return found;
+}
+function deleteVehicle(user, id) {
+  if (user) {  // Logged in
+    return getVehicles(user).then(data => {
+      if (data) { //Can try to delete something
+		var found = deleteHelper(data, id, 'id');
+		console.log(found);
+		if (found == 1) { //Before updating, check if we actually found anything
+			return collection.updateOne({user: user}, {$set: {vehicles: JSON.stringify(data)}}).then(res => {
+				//console.log(data);
+				return JSON.stringify(data);
+		    });
+		} else {
+			//TODO: Error handling
+		}
+	  } else {
+		console.log("No vehicle with that id found");
+		//TODO: Error handling
+	  }
+    });
+  } else {  // Not logged in
+    console.log("Please log in to perform that action.");
+	//TODO: Error handling
+  } 
+}
+
+function deleteLaunch(user, id) {
+  if (user) {  // Logged in
+    return getLaunches(user).then(data => {
+      if (data) { //Can try to delete something
+		var found = deleteHelper(data, id, 'flight_number');
+		console.log(found);
+		if (found == 1) { //Before updating, check if we actually found anything
+			return collection.updateOne({user: user}, {$set: {launches: JSON.stringify(data)}}).then(res => {
+				//console.log(data);
+				return JSON.stringify(data);
+		    });
+		} else {
+			//TODO: Error handling
+		}
+	  } else {
+		console.log("No vehicle with that id found");
+		//TODO: Error handling
+	  }
+    });
+  } else {  // Not logged in
+    console.log("Please log in to perform that action.");
+	//TODO: Error handling
+  } 
+}
+
+function deleteLaunchpad(user, id) {
+  if (user) {  // Logged in
+    return getLaunchpads(user).then(data => {
+      if (data) { //Can try to delete something
+		var found = deleteHelper(data, id, 'id');
+		console.log(found);
+		if (found == 1) { //Before updating, check if we actually found anything
+			return collection.updateOne({user: user}, {$set: {launchpads: JSON.stringify(data)}}).then(res => {
+				//console.log(data);
+				return JSON.stringify(data);
+		    });
+		} else {
+			//TODO: Error handling
+		}
+	  } else {
+		console.log("No vehicle with that id found");
+		//TODO: Error handling
+	  }
+    });
+  } else {  // Not logged in
+    console.log("Please log in to perform that action.");
+	//TODO: Error handling
+  } 
+}
+
