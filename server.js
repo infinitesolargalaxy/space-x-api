@@ -257,6 +257,24 @@ app.get('/api', (req, res) => {
       launchpads: '/api/launchpads'
     }
   });
+})
+.put('/api', (req, res) => {
+  res.send({
+    links: {
+      vehicles: '/api/vehicles',
+      launches: '/api/launches',
+      launchpads: '/api/launchpads'
+    }
+  });
+})
+.delete('/api', (req, res) => {
+  res.send({
+    links: {
+      vehicles: '/api/vehicles',
+      launches: '/api/launches',
+      launchpads: '/api/launchpads'
+    }
+  });
 });
 
 app.route('/api/vehicles')
@@ -283,6 +301,33 @@ app.route('/api/vehicles/:id')
           vehicle_launches: '/api/launches?vehicle=' + data.id
         }
       });
+    }).catch(err => {
+      // TODO
+    })
+  })
+  .put((req, res) => {
+    updateVehicle(req.user, req.params.id, req.body).then(data => {
+      res.send({
+        data: data,
+        links: {
+          vehicles: '/api/vehicles',
+          vehicle_launches: '/api/launches?vehicle=' + data.id
+        }
+      });
+    }).catch(err => {
+      // TODO
+    })
+  })
+  .delete((req, res) => {
+    deleteVehicle(req.user, req.params.id).then(data => {
+	  res.sendStatus(200);
+      /*res.send({
+        data: data,
+        links: {
+          vehicles: '/api/vehicles',
+          vehicle_launches: '/api/launches?vehicle=' + data.id
+        }
+      });*/
     }).catch(err => {
       // TODO
     })
@@ -318,6 +363,33 @@ app.route('/api/launches/:id')
     }).catch(err => {
       // TODO
     })
+  })
+  .put((req, res) => {
+    updateLaunch(req.user, req.params.id, req.body).then(data => {
+      res.send({
+        data: data,
+        links: {
+          vehicles: '/api/launch',
+          vehicle_launches: '/api/launches?vehicle=' + data.id
+        }
+      });
+    }).catch(err => {
+      // TODO
+    })
+  })
+  .delete((req, res) => {
+    deleteLaunch(req.user, req.params.id).then(data => {
+	  res.sendStatus(200);
+      /*res.send({
+        data: data,
+        links: {
+          vehicles: '/api/launch',
+          vehicle_launches: '/api/launches?vehicle=' + data.id
+        }
+      });*/
+    }).catch(err => {
+      // TODO
+    })
   });
 
 app.route('/api/launchpads')
@@ -347,6 +419,33 @@ app.route('/api/launchpads/:id')
     }).catch(err => {
       // TODO
     })
+  })
+  .put((req, res) => {
+    updateLaunchpad(req.user, req.params.id, req.body).then(data => {
+      res.send({
+        data: data,
+        links: {
+          vehicles: '/api/launch',
+          vehicle_launches: '/api/launches?vehicle=' + data.id
+        }
+      });
+    }).catch(err => {
+      // TODO
+    })
+  })
+  .delete((req, res) => {
+    deleteLaunchpad(req.user, req.params.id).then(data => {
+	  res.sendStatus(200);
+      /*res.send({
+        data: data,
+        links: {
+          vehicles: '/api/launch',
+          vehicle_launches: '/api/launches?vehicle=' + data.id
+        }
+      });*/
+    }).catch(err => {
+      // TODO
+    })
   });
   
 // ========== Post routes ==========
@@ -370,125 +469,6 @@ app.route('/api/launchpads/:id')
           vehicle: '/api/vehicles/<id>'
         }
       });
-    }).catch(err => {
-      // TODO
-    })
-  });
- 
- 
-// ========== Put routes ==========
-//Updating requires individual id
- app.put('/api', (req, res) => {
-  res.send({
-    links: {
-      vehicles: '/api/vehicles',
-      launches: '/api/launches',
-      launchpads: '/api/launchpads'
-    }
-  });
- });
-
- app.route('/api/vehicles/:id')
-  .put((req, res) => {
-    updateVehicle(req.user, req.params.id, req.body).then(data => {
-      res.send({
-        data: data,
-        links: {
-          vehicles: '/api/vehicles',
-          vehicle_launches: '/api/launches?vehicle=' + data.id
-        }
-      });
-    }).catch(err => {
-      // TODO
-    })
-  });
-  
-  app.route('/api/launches/:id')
-  .put((req, res) => {
-    updateLaunch(req.user, req.params.id, req.body).then(data => {
-      res.send({
-        data: data,
-        links: {
-          vehicles: '/api/launch',
-          vehicle_launches: '/api/launches?vehicle=' + data.id
-        }
-      });
-    }).catch(err => {
-      // TODO
-    })
-  });
-  
- app.route('/api/launchpads/:id')
-  .put((req, res) => {
-    updateLaunchpad(req.user, req.params.id, req.body).then(data => {
-      res.send({
-        data: data,
-        links: {
-          vehicles: '/api/launch',
-          vehicle_launches: '/api/launches?vehicle=' + data.id
-        }
-      });
-    }).catch(err => {
-      // TODO
-    })
-  });
-  
-// ========== Delete routes ==========
-//Deleting things requires individual id!
-//Usually apis just send status code 200 on success of a delete, should we try to keep the data?
-app.delete('/api', (req, res) => {
-  res.send({
-    links: {
-      vehicles: '/api/vehicles',
-      launches: '/api/launches',
-      launchpads: '/api/launchpads'
-    }
-  });
-});
-
-app.route('/api/vehicles/:id')
-  .delete((req, res) => {
-    deleteVehicle(req.user, req.params.id).then(data => {
-	  res.sendStatus(200);
-      /*res.send({
-        data: data,
-        links: {
-          vehicles: '/api/vehicles',
-          vehicle_launches: '/api/launches?vehicle=' + data.id
-        }
-      });*/
-    }).catch(err => {
-      // TODO
-    })
-  });
-  
-app.route('/api/launches/:id')
-  .delete((req, res) => {
-    deleteLaunch(req.user, req.params.id).then(data => {
-	  res.sendStatus(200);
-      /*res.send({
-        data: data,
-        links: {
-          vehicles: '/api/launch',
-          vehicle_launches: '/api/launches?vehicle=' + data.id
-        }
-      });*/
-    }).catch(err => {
-      // TODO
-    })
-  });
-  
- app.route('/api/launchpads/:id')
-  .delete((req, res) => {
-    deleteLaunchpad(req.user, req.params.id).then(data => {
-	  res.sendStatus(200);
-      /*res.send({
-        data: data,
-        links: {
-          vehicles: '/api/launch',
-          vehicle_launches: '/api/launches?vehicle=' + data.id
-        }
-      });*/
     }).catch(err => {
       // TODO
     })
