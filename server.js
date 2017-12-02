@@ -654,7 +654,8 @@ function addVehicle(user, id, newdata) {
 		  if (data) { //Update stuff
 			
 			//TODO: Add something that checks that newdata is in valid format!
-			return collection.updateOne({user: user}, {$set: {vehicles: JSON.stringify(data.push(newdata))}}).then(res => {
+			data.push(newdata)
+			return collection.updateOne({user: user}, {$set: {vehicles: JSON.stringify(data)}}).then(res => {
 				console.log(JSON.stringify(data));
 				return JSON.stringify(data);
 			});
