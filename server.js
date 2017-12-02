@@ -124,6 +124,28 @@ app.route('/vehicles/:id')
     }).catch(err => {
       // TODO
     })
+  })
+  .put((req, res) => {
+    updateVehicle(req.user, req.params.id, req.body).then(data => {
+      res.render('vehicles/index', {
+        title: "Vehicle " + req.params.id,
+        data: [data],
+        isLoggedIn: req.user
+      });
+    }).catch(err => {
+      // TODO
+    })
+  })
+  .delete((req, res) => {
+    deleteVehicle(req.user, req.params.id).then(data => {
+      res.render('vehicles/index', {
+		title: "Vehicle " + req.params.id,
+		data: [data],
+        isLoggedIn: req.user
+      });
+    }).catch(err => {
+      // TODO
+    })
   });
 
 // Launches collection. /launches, /launches?vehicle=<id>, /launches?launchpad=<id>
@@ -152,6 +174,28 @@ app.route('/launches/:id')
     }).catch(err => {
       // TODO
     })
+  })
+  .put((req, res) => {
+    updateLaunch(req.user, req.params.id, req.body).then(data => {
+      res.render('launches/index', {
+        title: "Launch #" + req.params.id,
+        data: [data],
+        isLoggedIn: req.user
+      });
+    }).catch(err => {
+      // TODO
+    })
+  })
+  .delete((req, res) => {
+    deleteLaunch(req.user, req.params.id).then(data => {
+      res.render('launches/index', {
+        title: "Launch #" + req.params.id,
+        data: [data],
+        isLoggedIn: req.user
+      });
+    }).catch(err => {
+      // TODO
+    })
   });
 
 // Launchpads collection
@@ -172,6 +216,28 @@ app.route('/launchpads')
 app.route('/launchpads/:id')
   .get((req, res) => {
     getLaunchpads(req.user, req.params.id).then(data => {
+      res.render('launchpads/index', {
+        title: "Launchpad " + req.params.id,
+        data: [data],
+        isLoggedIn: req.user
+      });
+    }).catch(err => {
+      // TODO
+    })
+  })
+  .put((req, res) => {
+    updateLaunchpad(req.user, req.params.id, req.body).then(data => {
+      res.render('launchpads/index', {
+        title: "Launchpad " + req.params.id,
+        data: [data],
+        isLoggedIn: req.user
+      });
+    }).catch(err => {
+      // TODO
+    })
+  })
+  .delete((req, res) => {
+    deleteLaunchpad(req.user, req.params.id).then(data => {
       res.render('launchpads/index', {
         title: "Launchpad " + req.params.id,
         data: [data],
@@ -283,6 +349,7 @@ app.route('/api/launchpads/:id')
     })
   });
   
+// ========== Post routes ==========
   //Creating requires a directory
  app.post('/api', (req, res) => {
   res.send({
@@ -308,7 +375,8 @@ app.route('/api/launchpads/:id')
     })
   });
  
-
+ 
+// ========== Put routes ==========
 //Updating requires individual id
  app.put('/api', (req, res) => {
   res.send({
@@ -365,7 +433,9 @@ app.route('/api/launchpads/:id')
     })
   });
   
+// ========== Delete routes ==========
 //Deleting things requires individual id!
+//Usually apis just send status code 200 on success of a delete, should we try to keep the data?
 app.delete('/api', (req, res) => {
   res.send({
     links: {
@@ -379,13 +449,14 @@ app.delete('/api', (req, res) => {
 app.route('/api/vehicles/:id')
   .delete((req, res) => {
     deleteVehicle(req.user, req.params.id).then(data => {
-      res.send({
+	  res.sendStatus(200);
+      /*res.send({
         data: data,
         links: {
           vehicles: '/api/vehicles',
           vehicle_launches: '/api/launches?vehicle=' + data.id
         }
-      });
+      });*/
     }).catch(err => {
       // TODO
     })
@@ -394,13 +465,14 @@ app.route('/api/vehicles/:id')
 app.route('/api/launches/:id')
   .delete((req, res) => {
     deleteLaunch(req.user, req.params.id).then(data => {
-      res.send({
+	  res.sendStatus(200);
+      /*res.send({
         data: data,
         links: {
           vehicles: '/api/launch',
           vehicle_launches: '/api/launches?vehicle=' + data.id
         }
-      });
+      });*/
     }).catch(err => {
       // TODO
     })
@@ -409,17 +481,19 @@ app.route('/api/launches/:id')
  app.route('/api/launchpads/:id')
   .delete((req, res) => {
     deleteLaunchpad(req.user, req.params.id).then(data => {
-      res.send({
+	  res.sendStatus(200);
+      /*res.send({
         data: data,
         links: {
           vehicles: '/api/launch',
           vehicle_launches: '/api/launches?vehicle=' + data.id
         }
-      });
+      });*/
     }).catch(err => {
       // TODO
     })
   });
+  
 // ========== Helper function for use in ejs files to format output ==========
 app.locals.printProperty = function(elem, key, keyName, pre, suf) {
   if (elem.hasOwnProperty(key)) {
@@ -578,14 +652,16 @@ function getLaunchpads(user, id) {
 /*
 Curl tests
 DELETE
+curl -u john:a --request DELETE localhost:3000/api/vehicles/falcon1
 curl -u john:a --request DELETE localhost:3000/api/launches/2
-
-POST
-curl -u john:a -d '{"active": "true", "cost_per_launch" : "1"}' -H "Content-Type: application/json" --request PUT localhost:3000/api/vehicles/falcon9
-curl -u john:a -d '{"launch_success": "true"}' -H "Content-Type: application/json" --request PUT localhost:3000/api/launches/1
-curl -u john:a -d '{"full_name": "Deep Space Nine"}' -H "Content-Type: application/json" --request PUT localhost:3000/api/launchpads/ccafs_slc_40
+curl -u john:a --request DELETE localhost:3000/api/launchpads/ccafs_slc_40
 
 PUT
+curl -u john:a -d '{"active": "true", "cost_per_launch" : "1"}' -H "Content-Type: application/json" --request PUT localhost:3000/api/vehicles/falcon9
+curl -u john:a -d '{"launch_success": "true"}' -H "Content-Type: application/json" --request PUT localhost:3000/api/launches/1
+curl -u john:a -d '{"full_name": "Deep Space Nine"}' -H "Content-Type: application/json" --request PUT localhost:3000/api/launchpads/ksc_lc_39a
+
+POST
 curl -u john:a -d '{"id": "falcon10", "name": "Falcon 10", "cost_per_launch": "100000000000", "success_rate_pct": "100", "first_flight": "2006-03-24",  "active": "true", "description":"The Falcon 10 is next gen"}' -H "Content-Type: application/json" --request POST localhost:3000/api/vehicles/
 */
 
@@ -616,37 +692,52 @@ function addVehicle(user, id, newdata) {
   } 
 }
 
-//Returns 0 on success and a non-zero number representing the number of errors on failure
+//Returns the updated object with the id if updated else returns null
+//Mutate data inside helper before updating our collection
 function updateHelper(data, id, attr, newdata) {
+	//Tracks if we had any errors inside while trying to update key
 	var err = 0
 	var success = 0
-	data.forEach(function (value, i) {
+	for (var i = 0; i < data.length; i++) {
 		console.log('Index %d', i);
+		//Find JSON object with same id as what we're looking for
 		if(data[i][attr] == id){
+			console.log("Found our attribute!")
+			//For each attribute in -d '{"attr1": "foo"}', update our data with it.
 			for (var key in newdata) {
+				//Filter out hidden attributes of an object
 				if (newdata.hasOwnProperty(key)) {
 					console.log("Checking if data has key!")
-					//Make sure that our original data already has this data as well
-					//Perhaps we should add check preventing user from changing the id's value?
-					if (data[i].hasOwnProperty(key)) {
+					//Make sure we aren't trying to update the superkey of the data
+					if (key == attr) {
+						err++;
+						break;
+					//Make sure that our original data already has this data as well, otherwise we are trying to update a non-existing field!
+					} else if (data[i].hasOwnProperty(key)) { 
 						console.log(key + " -> " + newdata[key]);
-						console.log(key + " -> " + data[key]);
+						console.log(key + " -> " + data[i][key]);
 						//Update the data!
 						data[i][key] = newdata[key]
 						success++;
 					} else {
 						//Can't update a non existing attribute!
 						err++;
+						break;
 					}
 				}
 			}
+			const message = "Success: " + success + " err: " + err;
+			// Print the string
+			console.log(message)
+			if (err == 0 && success > 0) { //Success! Return data that was updated
+				return data[i];
+			} else { //Error!
+				return null;
+			}
 		}
-	});
-	//Check if we actually updated anything
-	if (success == 0) {
-		err++
 	}
-	return err;
+	//Didn't find anything
+	return null;
 }
 
 function updateVehicle(user, id, newdata) {
@@ -655,11 +746,11 @@ function updateVehicle(user, id, newdata) {
     if (newdata) {
 		return getVehicles(user).then(data => {
 		  if (data) { //Update stuff
-				var res = updateHelper(data, id, 'id', newdata);
-				if (res == 0) {
+				var result = updateHelper(data, id, 'id', newdata);
+				if (result) { //Means we got back data!
 					return collection.updateOne({user: user}, {$set: {vehicles: JSON.stringify(data)}}).then(res => {
 						//console.log(data);
-						return JSON.stringify(data);
+						return result;
 					});
 				} else {
 					//Error handling
@@ -684,11 +775,11 @@ function updateLaunch(user, id, newdata) {
     if (newdata) {
 		return getLaunches(user).then(data => {
 		  if (data) { //Update stuff
-				var res = updateHelper(data, id, 'flight_number', newdata);
-				if (res == 0) {
+				var result = updateHelper(data, id, 'flight_number', newdata);
+				if (result) { //Means we got back data!
 					return collection.updateOne({user: user}, {$set: {launches: JSON.stringify(data)}}).then(res => {
 						//console.log(data);
-						return JSON.stringify(data);
+						return result;
 					});
 				} else {
 					//Error handling
@@ -713,11 +804,11 @@ function updateLaunchpad(user, id, newdata) {
     if (newdata) {
 		return getLaunchpads(user).then(data => {
 		  if (data) { //Update stuff
-				var res = updateHelper(data, id, 'id', newdata);
-				if (res == 0) {
+				var result = updateHelper(data, id, 'id', newdata);
+				if (result) { //Means we got back data!
 					return collection.updateOne({user: user}, {$set: {launchpads: JSON.stringify(data)}}).then(res => {
 						//console.log(data);
-						return JSON.stringify(data);
+						return result;
 					});
 				} else {
 					//Error handling
@@ -736,20 +827,23 @@ function updateLaunchpad(user, id, newdata) {
   } 
 }
 
+//Returns a copy of the data on success
 //Takes in the JSON array, id to look for, and the attribute to check with.
 function deleteHelper(data, id, attr) {
-	var found = 0 //Flag variable
-		data.forEach(function (value, i) {
+	//Just check for every index
+	for (var i = 0; i < data.length; i++) {
 		console.log('Index %d %s', i, JSON.stringify(data[i]));
+		//Look if the id is the same as our's
 		if(data[i][attr] == id){
+			//Make a copy!
+			var copy = JSON.parse(JSON.stringify(data[i])); //
 			//If we simply delete, we will have a null in the deleted entry's index. Thus, we must use splice to correct the array afterwards
 			delete data[i] //Seems to do the same thing even if we didn't delete first.
 			data.splice(i ,1);
-			found = 1
+			return copy;
 		}
-	});
-	console.log(found);
-	return found;
+	}
+	return null
 }
 
 function deleteVehicle(user, id) {
@@ -758,10 +852,10 @@ function deleteVehicle(user, id) {
       if (data) { //Can try to delete something
 		var found = deleteHelper(data, id, 'id');
 		console.log(found);
-		if (found == 1) { //Before updating, check if we actually found anything
+		if (found) { //Before updating, check if we actually found anything
 			return collection.updateOne({user: user}, {$set: {vehicles: JSON.stringify(data)}}).then(res => {
 				//console.log(data);
-				return JSON.stringify(data);
+				return found;
 		    });
 		} else {
 			//TODO: Error handling
@@ -783,10 +877,10 @@ function deleteLaunch(user, id) {
       if (data) { //Can try to delete something
 		var found = deleteHelper(data, id, 'flight_number');
 		console.log(found);
-		if (found == 1) { //Before updating, check if we actually found anything
+		if (found) { //Before updating, check if we actually found anything
 			return collection.updateOne({user: user}, {$set: {launches: JSON.stringify(data)}}).then(res => {
-				//console.log(data);
-				return JSON.stringify(data);
+				console.log(found);
+				return found;
 		    });
 		} else {
 			//TODO: Error handling
@@ -808,10 +902,10 @@ function deleteLaunchpad(user, id) {
       if (data) { //Can try to delete something
 		var found = deleteHelper(data, id, 'id');
 		console.log(found);
-		if (found == 1) { //Before updating, check if we actually found anything
+		if (found) { //Before updating, check if we actually found anything
 			return collection.updateOne({user: user}, {$set: {launchpads: JSON.stringify(data)}}).then(res => {
 				//console.log(data);
-				return JSON.stringify(data);
+				return found;
 		    });
 		} else {
 			//TODO: Error handling
