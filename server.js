@@ -139,12 +139,23 @@ app.route('/vehicles/:id')
   .delete((req, res) => {
     deleteVehicle(req.user, req.params.id).then(data => {
       res.render('vehicles/index', {
-		title: "Vehicle " + req.params.id,
-		data: [data],
+		    title: "Vehicle " + req.params.id,
+		    data: [data],
         isLoggedIn: req.user
       });
     }).catch(err => {
       // TODO
+    })
+  })
+  .post((req,res) =>{
+    addVehicle(req.user, req.params.id, req.body).then (data => {
+      res.render('vehicles/index', {
+        title: "Vehicle " + req.params.id,
+        data: [data],
+        isLoggedIn: req.user
+      });
+    }).catch(err => {
+      //TODO
     })
   });
 
@@ -196,6 +207,17 @@ app.route('/launches/:id')
     }).catch(err => {
       // TODO
     })
+  })
+  .post((req, res) => {
+    addLaunch(req.user, req.params.id, req.body).then(data => {
+      res.render('launches/index', {
+        title: "Launch #" + req.params.id,
+        data: [data],
+        isLoggedIn: req.user
+      });
+    }).catch(err => {
+      // TODO
+    })
   });
 
 // Launchpads collection
@@ -238,6 +260,17 @@ app.route('/launchpads/:id')
   })
   .delete((req, res) => {
     deleteLaunchpad(req.user, req.params.id).then(data => {
+      res.render('launchpads/index', {
+        title: "Launchpad " + req.params.id,
+        data: [data],
+        isLoggedIn: req.user
+      });
+    }).catch(err => {
+      // TODO
+    })
+  })
+  .post((req, res) => {
+    addLaunchpad(req.user, req.params.id, req.body).then(data => {
       res.render('launchpads/index', {
         title: "Launchpad " + req.params.id,
         data: [data],
@@ -331,6 +364,13 @@ app.route('/api/vehicles/:id')
     }).catch(err => {
       // TODO
     })
+  })
+  .post((req, res) => {
+    addVehicle(req.user, req.params.id, req.body).then(data => {
+      res.send(data);
+    }).catch(err => {
+      // TODO
+    })
   });
 
 app.route('/api/launches')
@@ -369,8 +409,9 @@ app.route('/api/launches/:id')
       res.send({
         data: data,
         links: {
-          vehicles: '/api/launch',
-          vehicle_launches: '/api/launches?vehicle=' + data.id
+          launches: '/api/launches',
+          launch_vehicle: '/api/vehicle/' + data.rocket.rocket_id,
+          launch_launchpad: '/api/launchpads/' + data.launch_site.site_id
         }
       });
     }).catch(err => {
@@ -387,6 +428,13 @@ app.route('/api/launches/:id')
           vehicle_launches: '/api/launches?vehicle=' + data.id
         }
       });*/
+    }).catch(err => {
+      // TODO
+    })
+  })
+  .post((req, res) => {
+    addLaunch(req.user, req.params.id, req.body).then(data => {
+      res.send(data);
     }).catch(err => {
       // TODO
     })
@@ -425,8 +473,8 @@ app.route('/api/launchpads/:id')
       res.send({
         data: data,
         links: {
-          vehicles: '/api/launch',
-          vehicle_launches: '/api/launches?vehicle=' + data.id
+          launchpads: '/api/launchpads',
+          launchpad_launches: '/api/launches?launchpad=' + data.id
         }
       });
     }).catch(err => {
@@ -443,6 +491,13 @@ app.route('/api/launchpads/:id')
           vehicle_launches: '/api/launches?vehicle=' + data.id
         }
       });*/
+    }).catch(err => {
+      // TODO
+    })
+  })
+  .post((req, res) => {
+    updateLaunchpad(req.user, req.params.id, req.body).then(data => {
+      res.send(data);
     }).catch(err => {
       // TODO
     })
@@ -647,7 +702,7 @@ curl -u john:a -d '{"id": "falcon10", "name": "Falcon 10", "cost_per_launch": "1
 
 //Doesn't seem to work... vehicle/index.ejs throws some error about foreach.
 function addVehicle(user, id, newdata) {
-   console.log(newdata);
+  console.log(newdata);
   if (user) {  // Logged in
     if (newdata) {
 		return getVehicles(user).then(data => {
@@ -671,6 +726,60 @@ function addVehicle(user, id, newdata) {
     console.log("Please log in to perform that action.");
 	//TODO: Error handling
   } 
+}
+
+function addLaunch(user, id, newdata){
+  console.log (newdata);
+  if (user) {  // Logged in
+    if (newdata) {
+    return getLaunches(user).then(data => {
+      if (data) { //Update stuff
+      
+      //TODO: Add something that checks that newdata is in valid format!
+      data.push(newdata)
+      return collection.updateOne({user: user}, {$set: {launches: JSON.stringify(data)}}).then(res => {
+        console.log(JSON.stringify(data));
+        return JSON.stringify(data);
+      });
+      } else {
+      console.log("No launch with that id found");
+      //TODO: Error handling
+      }
+    });
+  } else { //Not using -d '{"data": "stuff"}'
+    
+  }
+  } else {  // Not logged in
+    console.log("Please log in to perform that action.");
+  //TODO: Error handling
+  }   
+}
+
+function addLaunchpad(user, id, newdata){
+  console.log (newdata);
+  if (user) {  // Logged in
+    if (newdata) {
+    return getLaunchpads(user).then(data => {
+      if (data) { //Update stuff
+      
+      //TODO: Add something that checks that newdata is in valid format!
+      data.push(newdata)
+      return collection.updateOne({user: user}, {$set: {launchpads: JSON.stringify(data)}}).then(res => {
+        console.log(JSON.stringify(data));
+        return JSON.stringify(data);
+      });
+      } else {
+      console.log("No launchpad with that id found");
+      //TODO: Error handling
+      }
+    });
+  } else { //Not using -d '{"data": "stuff"}'
+    
+  }
+  } else {  // Not logged in
+    console.log("Please log in to perform that action.");
+  //TODO: Error handling
+  }   
 }
 
 //Returns the updated object with the id if updated else returns null
