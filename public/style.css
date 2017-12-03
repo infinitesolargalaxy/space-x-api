@@ -98,6 +98,14 @@ li {
           animation: fadeEffect 1s ease-in-out;
 }
 
+/* Message */
+.tab-view .message {
+  margin-top: 15px;
+  padding: 15px;
+  background-color: #cce5ff;
+  border-radius: 2px;
+}
+
 /* Results */
 .tab-view .result {
   padding: 15px;
