@@ -585,6 +585,20 @@ MongoClient.connect(dbURL, (err, res) => {
     .catch(err => {
       // TODO
     });
+    collection.insertOne({  // Hard code one message on server
+      user: "admin",
+      password: "admin",
+      messages: JSON.stringify([{
+        id: 0,
+        data: "hello"
+      }])
+    }, (err, res) => {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log("(added message 'hello' with id '0')");
+      }
+    })
 
     app.listen(PORT, () => {
       console.log("Server listening on port " + PORT);
@@ -1158,3 +1172,9 @@ function deleteLaunchpad(user, id) {
     });
 }
 
+// ========== Get/Add/Delete messages from database ==========
+function getMessages() {
+  return collection.find({user: "admin"}).limit(1).next().then(res => {
+    return JSON.parse(res.messages);
+  });
+}
