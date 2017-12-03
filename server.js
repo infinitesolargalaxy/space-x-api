@@ -112,15 +112,19 @@ app.route('/vehicles')
     })
   })
   .post((req,res) =>{
-    addVehicle(req.user, req.params.id, req.body).then (data => {
-      res.render('vehicles/index', {
-        title: "Vehicle " + req.params.id,
-        data: [data],
-        isLoggedIn: req.user
-      });
-    }).catch(err => {
-      //TODO
-    })
+	if (req.user) {
+		addVehicle(req.user, req.body).then (data => {
+		  res.render('vehicles/index', {
+			title: "Vehicle " + req.params.id,
+			data: [data],
+			isLoggedIn: req.user
+		  });
+		}).catch(err => {
+		  //TODO
+		})
+	} else {
+		res.sendStatus(401);
+	}
   });
 
 // A vehicle
@@ -185,15 +189,19 @@ app.route('/launches')
     })
   })
   .post((req, res) => {
-    addLaunch(req.user, req.params.id, req.body).then(data => {
-      res.render('launches/index', {
-        title: "Launch #" + req.params.id,
-        data: [data],
-        isLoggedIn: req.user
-      });
-    }).catch(err => {
-      // TODO
-    })
+	if (req.user) {
+		addLaunch(req.user, req.body).then(data => {
+		  res.render('launches/index', {
+			title: "Launch #" + req.params.id,
+			data: [data],
+			isLoggedIn: req.user
+		  });
+		}).catch(err => {
+		  // TODO
+		})
+	} else {
+		res.sendStatus(401);
+	}
   });
 
 // A launch
@@ -258,15 +266,19 @@ app.route('/launchpads')
     })
   })
   .post((req, res) => {
-    addLaunchpad(req.user, req.params.id, req.body).then(data => {
-      res.render('launchpads/index', {
-        title: "Launchpad " + req.params.id,
-        data: [data],
-        isLoggedIn: req.user
-      });
-    }).catch(err => {
-      // TODO
-    })
+	if (req.user) {
+		addLaunchpad(req.user, req.body).then(data => {
+		  res.render('launchpads/index', {
+			title: "Launchpad " + req.params.id,
+			data: [data],
+			isLoggedIn: req.user
+		  });
+		}).catch(err => {
+		  // TODO
+		})
+	} else {
+		res.sendStatus(401);
+	}
   });
 
 // A launchpad
@@ -360,11 +372,15 @@ app.route('/api/vehicles')
     })
   })
   .post((req, res) => {
-    addVehicle(req.user, req.params.id, req.body).then(data => {
-      res.send(data);
-    }).catch(err => {
-      // TODO
-    })
+	if (req.user) {
+		addVehicle(req.user, req.body).then(data => {
+		  res.send(data);
+		}).catch(err => {
+		  // TODO
+		})
+	} else {
+		res.sendStatus(401);
+	}
   });
 
 app.route('/api/vehicles/:id')
@@ -437,11 +453,15 @@ app.route('/api/launches')
     })
   })
   .post((req, res) => {
-    addLaunch(req.user, req.params.id, req.body).then(data => {
-      res.send(data);
-    }).catch(err => {
-      // TODO
-    })
+	if (req.user) {
+		addLaunch(req.user, req.body).then(data => {
+		  res.send(data);
+		}).catch(err => {
+		  // TODO
+		})
+	} else {
+		res.sendStatus(401);
+	}
   });
 
 app.route('/api/launches/:id')
@@ -514,11 +534,15 @@ app.route('/api/launchpads')
     })
   })
   .post((req, res) => {
-    updateLaunchpad(req.user, req.params.id, req.body).then(data => {
-      res.send(data);
-    }).catch(err => {
-      // TODO
-    })
+	if (req.user) {
+		addLaunchpad(req.user, req.body).then(data => {
+		  res.send(data);
+		}).catch(err => {
+		  // TODO
+		})
+	} else {
+		res.sendStatus(401);
+	}
   });
 
 app.route('/api/launchpads/:id')
@@ -573,32 +597,6 @@ app.route('/api/launchpads/:id')
 	} else {
 		res.sendStatus(401);
 	}
-  });
-  
-// ========== Post routes ==========
-  //Creating requires a directory
- app.post('/api', (req, res) => {
-  res.send({
-    links: {
-      vehicles: '/api/vehicles',
-      launches: '/api/launches',
-      launchpads: '/api/launchpads'
-    }
-  });
- });
- 
- app.route('/api/vehicles')
-  .post((req, res) => {
-    addVehicle(req.user, req.params.id, req.body).then(data => {
-      res.send({
-        data: data,
-        links: {
-          vehicle: '/api/vehicles/<id>'
-        }
-      });
-    }).catch(err => {
-      // TODO
-    })
   });
   
 // ========== Helper function for use in ejs files to format output ==========
@@ -778,40 +776,81 @@ curl -u john:a -d '{"full_name": "Deep Space Nine"}' -H "Content-Type: applicati
 
 POST
 curl -u john:a -d '{"id": "falcon10", "name": "Falcon 10", "cost_per_launch": "100000000000", "success_rate_pct": "100", "first_flight": "2006-03-24",  "active": "true", "description":"The Falcon 10 is next gen"}' -H "Content-Type: application/json" --request POST localhost:3000/api/vehicles/
+curl -u john:a -d '{"id":"deathstar","full_name":"Peace Moon","status":"active","location":{"name":"Cape Canaveral","region":"Florida"},"vehicles_launched":"falcon 9","details":"Fully operation battlestation"}' -H "Content-Type: application/json" --request POST localhost:3000/api/launchpads/
+curl -u john:a -d '{"flight_number":100,"launch_date_local":"2006-03-25T10:30:00+12:00","rocket":{"rocket_id":"falcon1","rocket_name":"Falcon 1"},"launch_site":{"site_id":"kwajalein_atoll","site_name":"Kwajalein Atoll","site_name_long":"Kwajalein Atoll Omelek Island"},"launch_success":false,"details":"Engine failure at 33 seconds and loss of vehicle"}' -H "Content-Type: application/json" --request POST localhost:3000/api/launches/
 */
 
-//Doesn't seem to work... vehicle/index.ejs throws some error about foreach.
-function addVehicle(user, id, newdata) {
-  console.log(newdata);
-  if (user) {  // Logged in
-    if (newdata) {
-		return getVehicles(user).then(data => {
-		  if (data) { //Update stuff
-			
-			//TODO: Add something that checks that newdata is in valid format!
-			data.push(newdata)
-			return collection.updateOne({user: user}, {$set: {vehicles: JSON.stringify(data)}}).then(res => {
-				console.log(JSON.stringify(data));
-				return JSON.stringify(data);
-			});
-		  } else {
-			console.log("No vehicle with that id found");
-			//TODO: Error handling
-		  }
-		});
-	} else { //Not using -d '{"data": "stuff"}'
-		
+//Enforces that the data does not already exist.
+function doesNotExist(data, id, attr) {
+	for (var i = 0; i < data.length; i++) {
+		console.log('Index %d', i, data[i][attr], id);
+		//Find JSON object with same id as what we're looking for
+		if(data[i][attr] === id){
+			console.log("Object with id %s already exists!", id.toString())
+			return 0; //Fail
+		}
 	}
-  } else {  // Not logged in
-    console.log("Please log in to perform that action.");
-	//TODO: Error handling
-  } 
+	return 1; //Nothing already exists, we can move on.
 }
 
-function addLaunch(user, id, newdata){
+//Enforces that newdata has id, name, cost_per_launch, success_rate_pct, first_flight, active and description
+//We don't care if they have extra attributes as long as we satisfy these ones
+//Returns the id/key for this object as defined by attr on success and null on failure
+function addVehicleHelper(newdata, attr) {
+	var dictionary = {"id": false, "name": false, "cost_per_launch": false, "success_rate_pct": false, "first_flight": false, "active":false, "description":false};
+	for (var key in newdata) {
+		//Filter out hidden attributes of an object
+		if (newdata.hasOwnProperty(key)) {
+			console.log(newdata[key])
+			//Check if this is one of the ones we're looking for.
+			if (dictionary.hasOwnProperty(key)) {
+				dictionary[key] = true;
+			}
+		}
+	}
+	//Check if all conditions were satisfied
+	for (var key in dictionary) {
+		//Filter out hidden attributes of an object
+		if (dictionary.hasOwnProperty(key)) {
+			console.log(dictionary[key])
+			if (!dictionary[key]) {
+				return null; //Fails
+			}
+		}
+	}
+	return newdata[attr]; //Success
+}
+
+function addVehicle(user, newdata) {
+  if (newdata) {
+    return getVehicles(user).then(data => {
+    if (data) { //Update stuff
+	  var id = addVehicleHelper(newdata, 'id'); //We normally don't have id for post since we target a collection
+	  //First check if we returned null or not. If not, we can continue with checking for existence
+      if (id && doesNotExist(data, id, 'id') == 1) {
+			//TODO: Add something that checks that newdata is in valid format!
+		  data.push(newdata)
+		  return collection.updateOne({user: user}, {$set: {vehicles: JSON.stringify(data)}}).then(res => {
+			console.log(JSON.stringify(data));
+			return newdata;
+		  });  
+	  } else {
+		console.log("Invalid data");
+		//TODO: Error handling
+	  }
+    } else {
+      console.log("No vehicle with that id found");
+      //TODO: Error handling
+    }
+    });
+  } else { //Not using -d '{"data": "stuff"}'
+    
+  }
+}
+
+function addLaunch(user, newdata){
   console.log (newdata);
-  if (user) {  // Logged in
-    if (newdata) {
+  if (newdata) {
     return getLaunches(user).then(data => {
       if (data) { //Update stuff
       
@@ -819,7 +858,7 @@ function addLaunch(user, id, newdata){
       data.push(newdata)
       return collection.updateOne({user: user}, {$set: {launches: JSON.stringify(data)}}).then(res => {
         console.log(JSON.stringify(data));
-        return JSON.stringify(data);
+        return JSON.stringify(newdata);
       });
       } else {
       console.log("No launch with that id found");
@@ -829,24 +868,19 @@ function addLaunch(user, id, newdata){
   } else { //Not using -d '{"data": "stuff"}'
     
   }
-  } else {  // Not logged in
-    console.log("Please log in to perform that action.");
-  //TODO: Error handling
-  }   
 }
 
-function addLaunchpad(user, id, newdata){
+function addLaunchpad(user, newdata){
   console.log (newdata);
-  if (user) {  // Logged in
-    if (newdata) {
+  if (newdata) {
     return getLaunchpads(user).then(data => {
       if (data) { //Update stuff
-      
+      console.log("updating!");
       //TODO: Add something that checks that newdata is in valid format!
       data.push(newdata)
       return collection.updateOne({user: user}, {$set: {launchpads: JSON.stringify(data)}}).then(res => {
         console.log(JSON.stringify(data));
-        return JSON.stringify(data);
+        return JSON.stringify(newdata);
       });
       } else {
       console.log("No launchpad with that id found");
@@ -856,10 +890,6 @@ function addLaunchpad(user, id, newdata){
   } else { //Not using -d '{"data": "stuff"}'
     
   }
-  } else {  // Not logged in
-    console.log("Please log in to perform that action.");
-  //TODO: Error handling
-  }   
 }
 
 //Returns the updated object with the id if updated else returns null
@@ -911,7 +941,7 @@ function updateHelper(data, id, attr, newdata) {
 }
 
 function updateVehicle(user, id, newdata) {
-   console.log(newdata);
+   console.log(user, id, newdata);
     if (newdata) {
 		return getVehicles(user).then(data => {
 		  if (data) { //Update stuff
