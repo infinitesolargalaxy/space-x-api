@@ -26,16 +26,19 @@ app.use((req, res, next) => {      // Authenticator. Adds req.user field if succ
     checkAuth(auth.name, auth.pass).then(isAuthorized => {
       if (isAuthorized) {  // Authorized
         req.user = auth.name;
+        next();
       } else {  // Unauthorized
-        return res.sendStatus(401);
+        res.sendStatus(401);
       }
     }).catch(err => {
-      return next(err);
+      next(err);
     });
   } else if (req.cookies.user) {  // Already logged in through browser
     req.user = req.cookies.user;
+    next();
+  } else {  // Not logged in
+    next();
   }
-  next();
 });
 
 // Checks username and password credentials against database
