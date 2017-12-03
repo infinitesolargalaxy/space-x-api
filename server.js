@@ -141,26 +141,34 @@ app.route('/vehicles/:id')
     })
   })
   .put((req, res) => {
-    updateVehicle(req.user, req.params.id, req.body).then(data => {
-      res.render('vehicles/index', {
-        title: "Vehicle " + req.params.id,
-        data: [data],
-        isLoggedIn: req.user
-      });
-    }).catch(err => {
-      // TODO
-    })
+	if (req.user) {
+		updateVehicle(req.user, req.params.id, req.body).then(data => {
+		  res.render('vehicles/index', {
+			title: "Vehicle " + req.params.id,
+			data: [data],
+			isLoggedIn: req.user
+		  });
+		}).catch(err => {
+		  // TODO
+		})
+	} else {
+		res.sendStatus(401);
+	}
   })
   .delete((req, res) => {
-    deleteVehicle(req.user, req.params.id).then(data => {
-      res.render('vehicles/index', {
-		    title: "Vehicle " + req.params.id,
-		    data: [data],
-        isLoggedIn: req.user
-      });
-    }).catch(err => {
-      // TODO
-    })
+	if (req.user) {
+		deleteVehicle(req.user, req.params.id).then(data => {
+		  res.render('vehicles/index', {
+				title: "Vehicle " + req.params.id,
+				data: [data],
+			isLoggedIn: req.user
+		  });
+		}).catch(err => {
+		  // TODO
+		})
+	} else {
+		res.sendStatus(401);
+	}
   });
 
 // Launches collection. /launches, /launches?vehicle=<id>, /launches?launchpad=<id>
@@ -206,26 +214,34 @@ app.route('/launches/:id')
     })
   })
   .put((req, res) => {
-    updateLaunch(req.user, req.params.id, req.body).then(data => {
-      res.render('launches/index', {
-        title: "Launch #" + req.params.id,
-        data: [data],
-        isLoggedIn: req.user
-      });
-    }).catch(err => {
-      // TODO
-    })
+	if (req.user) {
+		updateLaunch(req.user, req.params.id, req.body).then(data => {
+		  res.render('launches/index', {
+			title: "Launch #" + req.params.id,
+			data: [data],
+			isLoggedIn: req.user
+		  });
+		}).catch(err => {
+		  // TODO
+		})
+	} else {
+		res.sendStatus(401);
+	}
   })
   .delete((req, res) => {
-    deleteLaunch(req.user, req.params.id).then(data => {
-      res.render('launches/index', {
-        title: "Launch #" + req.params.id,
-        data: [data],
-        isLoggedIn: req.user
-      });
-    }).catch(err => {
-      // TODO
-    })
+	if (req.user) {
+		deleteLaunch(req.user, req.params.id).then(data => {
+		  res.render('launches/index', {
+			title: "Launch #" + req.params.id,
+			data: [data],
+			isLoggedIn: req.user
+		  });
+		}).catch(err => {
+		  // TODO
+		})
+	} else {
+		res.sendStatus(401);
+	}
   });
 
 // Launchpads collection
@@ -271,26 +287,34 @@ app.route('/launchpads/:id')
     })
   })
   .put((req, res) => {
-    updateLaunchpad(req.user, req.params.id, req.body).then(data => {
-      res.render('launchpads/index', {
-        title: "Launchpad " + req.params.id,
-        data: [data],
-        isLoggedIn: req.user
-      });
-    }).catch(err => {
-      // TODO
-    })
+	if (req.user) {
+		updateLaunchpad(req.user, req.params.id, req.body).then(data => {
+		  res.render('launchpads/index', {
+			title: "Launchpad " + req.params.id,
+			data: [data],
+			isLoggedIn: req.user
+		  });
+		}).catch(err => {
+		  // TODO
+		})
+	} else {
+		res.sendStatus(401);
+	}
   })
   .delete((req, res) => {
-    deleteLaunchpad(req.user, req.params.id).then(data => {
-      res.render('launchpads/index', {
-        title: "Launchpad " + req.params.id,
-        data: [data],
-        isLoggedIn: req.user
-      });
-    }).catch(err => {
-      // TODO
-    })
+	if (req.user) {
+		deleteLaunchpad(req.user, req.params.id).then(data => {
+		  res.render('launchpads/index', {
+			title: "Launchpad " + req.params.id,
+			data: [data],
+			isLoggedIn: req.user
+		  });
+		}).catch(err => {
+		  // TODO
+		})
+	} else {
+		res.sendStatus(401);
+	}
   });
 
 // ========== API routes ==========
@@ -362,31 +386,39 @@ app.route('/api/vehicles/:id')
     })
   })
   .put((req, res) => {
-    updateVehicle(req.user, req.params.id, req.body).then(data => {
-      res.send({
-        data: data,
-        links: {
-          vehicles: '/api/vehicles',
-          vehicle_launches: '/api/launches?vehicle=' + data.id
-        }
-      });
-    }).catch(err => {
-      // TODO
-    })
+	if (req.user) {
+		updateVehicle(req.user, req.params.id, req.body).then(data => {
+		  res.send({
+			data: data,
+			links: {
+			  vehicles: '/api/vehicles',
+			  vehicle_launches: '/api/launches?vehicle=' + data.id
+			}
+		  });
+		}).catch(err => {
+		  // TODO
+		})
+	} else {
+		res.sendStatus(401);
+	}
   })
   .delete((req, res) => {
-    deleteVehicle(req.user, req.params.id).then(data => {
-	  res.sendStatus(200);
-      /*res.send({
-        data: data,
-        links: {
-          vehicles: '/api/vehicles',
-          vehicle_launches: '/api/launches?vehicle=' + data.id
-        }
-      });*/
-    }).catch(err => {
-      // TODO
-    })
+	if (req.user) {
+		deleteVehicle(req.user, req.params.id).then(data => {
+		  res.sendStatus(200);
+		  /*res.send({
+			data: data,
+			links: {
+			  vehicles: '/api/vehicles',
+			  vehicle_launches: '/api/launches?vehicle=' + data.id
+			}
+		  });*/
+		}).catch(err => {
+		  // TODO
+		})
+	} else {
+		res.sendStatus(401);
+	}
   });
 
 app.route('/api/launches')
@@ -432,32 +464,40 @@ app.route('/api/launches/:id')
     })
   })
   .put((req, res) => {
-    updateLaunch(req.user, req.params.id, req.body).then(data => {
-      res.send({
-        data: data,
-        links: {
-          launches: '/api/launches',
-          launch_vehicle: '/api/vehicle/' + data.rocket.rocket_id,
-          launch_launchpad: '/api/launchpads/' + data.launch_site.site_id
-        }
-      });
-    }).catch(err => {
-      // TODO
-    })
+	if (req.user) {
+		updateLaunch(req.user, req.params.id, req.body).then(data => {
+		  res.send({
+			data: data,
+			links: {
+			  launches: '/api/launches',
+			  launch_vehicle: '/api/vehicle/' + data.rocket.rocket_id,
+			  launch_launchpad: '/api/launchpads/' + data.launch_site.site_id
+			}
+		  });
+		}).catch(err => {
+		  // TODO
+		})
+	} else {
+		res.sendStatus(401);
+	}
   })
   .delete((req, res) => {
-    deleteLaunch(req.user, req.params.id).then(data => {
-	  res.sendStatus(200);
-      /*res.send({
-        data: data,
-        links: {
-          vehicles: '/api/launch',
-          vehicle_launches: '/api/launches?vehicle=' + data.id
-        }
-      });*/
-    }).catch(err => {
-      // TODO
-    })
+	if (req.user) {
+		deleteLaunch(req.user, req.params.id).then(data => {
+		  res.sendStatus(200);
+		  /*res.send({
+			data: data,
+			links: {
+			  vehicles: '/api/launch',
+			  vehicle_launches: '/api/launches?vehicle=' + data.id
+			}
+		  });*/
+		}).catch(err => {
+		  // TODO
+		})
+	} else {
+		res.sendStatus(401);
+	}
   });
 
 app.route('/api/launchpads')
@@ -500,31 +540,39 @@ app.route('/api/launchpads/:id')
     })
   })
   .put((req, res) => {
-    updateLaunchpad(req.user, req.params.id, req.body).then(data => {
-      res.send({
-        data: data,
-        links: {
-          launchpads: '/api/launchpads',
-          launchpad_launches: '/api/launches?launchpad=' + data.id
-        }
-      });
-    }).catch(err => {
-      // TODO
-    })
+	if (req.user) {
+		updateLaunchpad(req.user, req.params.id, req.body).then(data => {
+		  res.send({
+			data: data,
+			links: {
+			  launchpads: '/api/launchpads',
+			  launchpad_launches: '/api/launches?launchpad=' + data.id
+			}
+		  });
+		}).catch(err => {
+		  // TODO
+		})
+	} else {
+		res.sendStatus(401);
+	}
   })
   .delete((req, res) => {
-    deleteLaunchpad(req.user, req.params.id).then(data => {
-	  res.sendStatus(200);
-      /*res.send({
-        data: data,
-        links: {
-          vehicles: '/api/launch',
-          vehicle_launches: '/api/launches?vehicle=' + data.id
-        }
-      });*/
-    }).catch(err => {
-      // TODO
-    })
+	if (req.user) {
+		deleteLaunchpad(req.user, req.params.id).then(data => {
+		  res.sendStatus(200);
+		  /*res.send({
+			data: data,
+			links: {
+			  vehicles: '/api/launch',
+			  vehicle_launches: '/api/launches?vehicle=' + data.id
+			}
+		  });*/
+		}).catch(err => {
+		  // TODO
+		})
+	} else {
+		res.sendStatus(401);
+	}
   });
   
 // ========== Post routes ==========
@@ -864,7 +912,6 @@ function updateHelper(data, id, attr, newdata) {
 
 function updateVehicle(user, id, newdata) {
    console.log(newdata);
-  if (user) {  // Logged in
     if (newdata) {
 		return getVehicles(user).then(data => {
 		  if (data) { //Update stuff
@@ -885,15 +932,10 @@ function updateVehicle(user, id, newdata) {
 	} else { //Not using -d '{"data": "stuff"}'
 		
 	}
-  } else {  // Not logged in
-    console.log("Please log in to perform that action.");
-	//TODO: Error handling
-  } 
 }
 
 function updateLaunch(user, id, newdata) {
    console.log(newdata);
-  if (user) {  // Logged in
     if (newdata) {
 		return getLaunches(user).then(data => {
 		  if (data) { //Update stuff
@@ -914,15 +956,10 @@ function updateLaunch(user, id, newdata) {
 	} else { //Not using -d '{"data": "stuff"}'
 		//TODO: Error handling
 	}
-  } else {  // Not logged in
-    console.log("Please log in to perform that action.");
-	//TODO: Error handling
-  } 
 }
 
 function updateLaunchpad(user, id, newdata) {
    console.log(newdata);
-  if (user) {  // Logged in
     if (newdata) {
 		return getLaunchpads(user).then(data => {
 		  if (data) { //Update stuff
@@ -943,10 +980,6 @@ function updateLaunchpad(user, id, newdata) {
 	} else { //Not using -d '{"data": "stuff"}'
 		//TODO: Error handling
 	}
-  } else {  // Not logged in
-    console.log("Please log in to perform that action.");
-	//TODO: Error handling
-  } 
 }
 
 //Returns a copy of the data on success
@@ -969,7 +1002,6 @@ function deleteHelper(data, id, attr) {
 }
 
 function deleteVehicle(user, id) {
-  if (user) {  // Logged in
     return getVehicles(user).then(data => {
       if (data) { //Can try to delete something
 		var found = deleteHelper(data, id, 'id');
@@ -987,14 +1019,9 @@ function deleteVehicle(user, id) {
 		//TODO: Error handling
 	  }
     });
-  } else {  // Not logged in
-    console.log("Please log in to perform that action.");
-	//TODO: Error handling
-  } 
 }
 
 function deleteLaunch(user, id) {
-  if (user) {  // Logged in
     return getLaunches(user).then(data => {
       if (data) { //Can try to delete something
 		var found = deleteHelper(data, id, 'flight_number');
@@ -1012,14 +1039,9 @@ function deleteLaunch(user, id) {
 		//TODO: Error handling
 	  }
     });
-  } else {  // Not logged in
-    console.log("Please log in to perform that action.");
-	//TODO: Error handling
-  } 
 }
 
 function deleteLaunchpad(user, id) {
-  if (user) {  // Logged in
     return getLaunchpads(user).then(data => {
       if (data) { //Can try to delete something
 		var found = deleteHelper(data, id, 'id');
@@ -1037,9 +1059,5 @@ function deleteLaunchpad(user, id) {
 		//TODO: Error handling
 	  }
     });
-  } else {  // Not logged in
-    console.log("Please log in to perform that action.");
-	//TODO: Error handling
-  } 
 }
 
