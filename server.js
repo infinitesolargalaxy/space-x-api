@@ -404,13 +404,7 @@ app.route('/api/vehicles/:id')
   .put((req, res) => {
 	if (req.user) {
 		updateVehicle(req.user, req.params.id, req.body).then(data => {
-		  res.send({
-			data: data,
-			links: {
-			  vehicles: '/api/vehicles',
-			  vehicle_launches: '/api/launches?vehicle=' + data.id
-			}
-		  });
+		  res.send(data);
 		}).catch(err => {
 		  // TODO
 		})
@@ -422,13 +416,6 @@ app.route('/api/vehicles/:id')
 	if (req.user) {
 		deleteVehicle(req.user, req.params.id).then(data => {
 		  res.sendStatus(200);
-		  /*res.send({
-			data: data,
-			links: {
-			  vehicles: '/api/vehicles',
-			  vehicle_launches: '/api/launches?vehicle=' + data.id
-			}
-		  });*/
 		}).catch(err => {
 		  // TODO
 		})
@@ -486,14 +473,7 @@ app.route('/api/launches/:id')
   .put((req, res) => {
 	if (req.user) {
 		updateLaunch(req.user, req.params.id, req.body).then(data => {
-		  res.send({
-			data: data,
-			links: {
-			  launches: '/api/launches',
-			  launch_vehicle: '/api/vehicle/' + data.rocket.rocket_id,
-			  launch_launchpad: '/api/launchpads/' + data.launch_site.site_id
-			}
-		  });
+		  res.send(data);
 		}).catch(err => {
 		  // TODO
 		})
@@ -505,13 +485,6 @@ app.route('/api/launches/:id')
 	if (req.user) {
 		deleteLaunch(req.user, req.params.id).then(data => {
 		  res.sendStatus(200);
-		  /*res.send({
-			data: data,
-			links: {
-			  vehicles: '/api/launch',
-			  vehicle_launches: '/api/launches?vehicle=' + data.id
-			}
-		  });*/
 		}).catch(err => {
 		  // TODO
 		})
@@ -566,15 +539,9 @@ app.route('/api/launchpads/:id')
   .put((req, res) => {
 	if (req.user) {
 		updateLaunchpad(req.user, req.params.id, req.body).then(data => {
-		  res.send({
-			data: data,
-			links: {
-			  launchpads: '/api/launchpads',
-			  launchpad_launches: '/api/launches?launchpad=' + data.id
-			}
-		  });
+			res.send(data);
 		}).catch(err => {
-		  // TODO
+		  res.sendStatus(500);
 		})
 	} else {
 		res.sendStatus(401);
@@ -584,13 +551,6 @@ app.route('/api/launchpads/:id')
 	if (req.user) {
 		deleteLaunchpad(req.user, req.params.id).then(data => {
 		  res.sendStatus(200);
-		  /*res.send({
-			data: data,
-			links: {
-			  vehicles: '/api/launch',
-			  vehicle_launches: '/api/launches?vehicle=' + data.id
-			}
-		  });*/
 		}).catch(err => {
 		  // TODO
 		})
@@ -802,10 +762,15 @@ curl -u john:a -d '{"active": "true", "cost_per_launch" : "1"}' -H "Content-Type
 curl -u john:a -d '{"launch_success": "true"}' -H "Content-Type: application/json" --request PUT localhost:3000/api/launches/1
 curl -u john:a -d '{"full_name": "Deep Space Nine"}' -H "Content-Type: application/json" --request PUT localhost:3000/api/launchpads/ksc_lc_39a
 
+PUT (for create)
+curl -u john:a -d '{"name": "Falcon 10", "cost_per_launch": "100000000000", "success_rate_pct": "100", "first_flight": "2006-03-24",  "active": "true", "description":"The Falcon 10 is next gen"}' -H "Content-Type: application/json" --request PUT localhost:3000/api/vehicles/falcon10
+curl -u john:a -d '{"launch_date_local":"2006-03-25T10:30:00+12:00","rocket":{"rocket_id":"falcon1","rocket_name":"Falcon 1"},"launch_site":{"site_id":"kwajalein_atoll","site_name":"Kwajalein Atoll","site_name_long":"Kwajalein Atoll Omelek Island"},"launch_success":false,"details":"Engine failure at 33 seconds and loss of vehicle"}' -H "Content-Type: application/json" --request PUT localhost:3000/api/launches/100
+curl -u john:a -d '{"full_name":"Peace Moon","status":"active","location":{"name":"Cape Canaveral","region":"Florida"},"vehicles_launched":"falcon 9","details":"Fully operation battlestation"}' -H "Content-Type: application/json" --request PUT localhost:3000/api/launchpads/deathstar
+
 POST
 curl -u john:a -d '{"id": "falcon10", "name": "Falcon 10", "cost_per_launch": "100000000000", "success_rate_pct": "100", "first_flight": "2006-03-24",  "active": "true", "description":"The Falcon 10 is next gen"}' -H "Content-Type: application/json" --request POST localhost:3000/api/vehicles/
-curl -u john:a -d '{"id":"deathstar","full_name":"Peace Moon","status":"active","location":{"name":"Cape Canaveral","region":"Florida"},"vehicles_launched":"falcon 9","details":"Fully operation battlestation"}' -H "Content-Type: application/json" --request POST localhost:3000/api/launchpads/
 curl -u john:a -d '{"flight_number":100,"launch_date_local":"2006-03-25T10:30:00+12:00","rocket":{"rocket_id":"falcon1","rocket_name":"Falcon 1"},"launch_site":{"site_id":"kwajalein_atoll","site_name":"Kwajalein Atoll","site_name_long":"Kwajalein Atoll Omelek Island"},"launch_success":false,"details":"Engine failure at 33 seconds and loss of vehicle"}' -H "Content-Type: application/json" --request POST localhost:3000/api/launches/
+curl -u john:a -d '{"id":"deathstar","full_name":"Peace Moon","status":"active","location":{"name":"Cape Canaveral","region":"Florida"},"vehicles_launched":"falcon 9","details":"Fully operational battlestation"}' -H "Content-Type: application/json" --request POST localhost:3000/api/launchpads/
 */
 
 //Enforces that the data does not already exist.
@@ -826,6 +791,58 @@ function doesNotExist(data, id, attr) {
 //Returns the id/key for this object as defined by attr on success and null on failure
 function addVehicleHelper(newdata, attr) {
 	var dictionary = {"id": false, "name": false, "cost_per_launch": false, "success_rate_pct": false, "first_flight": false, "active":false, "description":false};
+	for (var key in newdata) {
+		//Filter out hidden attributes of an object
+		if (newdata.hasOwnProperty(key)) {
+			console.log(newdata[key])
+			//Check if this is one of the ones we're looking for.
+			if (dictionary.hasOwnProperty(key)) {
+				dictionary[key] = true;
+			}
+		}
+	}
+	//Check if all conditions were satisfied
+	for (var key in dictionary) {
+		//Filter out hidden attributes of an object
+		if (dictionary.hasOwnProperty(key)) {
+			console.log(dictionary[key])
+			if (!dictionary[key]) {
+				return null; //Fails
+			}
+		}
+	}
+	return newdata[attr]; //Success
+}
+
+//'flight_number', 'details', 'rocket', 'launch_site', 'launch_date_local', 'launch_success'
+function addLaunchHelper(newdata, attr) {
+	var dictionary = {"flight_number": false, "details": false, "rocket": false, "launch_site": false, "launch_date_local": false, "launch_success":false};
+	for (var key in newdata) {
+		//Filter out hidden attributes of an object
+		if (newdata.hasOwnProperty(key)) {
+			console.log(newdata[key])
+			//Check if this is one of the ones we're looking for.
+			if (dictionary.hasOwnProperty(key)) {
+				dictionary[key] = true;
+			}
+		}
+	}
+	//Check if all conditions were satisfied
+	for (var key in dictionary) {
+		//Filter out hidden attributes of an object
+		if (dictionary.hasOwnProperty(key)) {
+			console.log(dictionary[key])
+			if (!dictionary[key]) {
+				return null; //Fails
+			}
+		}
+	}
+	return newdata[attr]; //Success
+}
+
+//'id', 'full_name', 'details', 'status', 'location'
+function addLaunchpadHelper(newdata, attr) {
+	var dictionary = {"id": false, "full_name": false, "details": false, "status": false, "location": false};
 	for (var key in newdata) {
 		//Filter out hidden attributes of an object
 		if (newdata.hasOwnProperty(key)) {
@@ -881,17 +898,22 @@ function addLaunch(user, newdata){
   if (newdata) {
     return getLaunches(user).then(data => {
       if (data) { //Update stuff
-      
-      //TODO: Add something that checks that newdata is in valid format!
-      data.push(newdata)
-      return collection.updateOne({user: user}, {$set: {launches: JSON.stringify(data)}}).then(res => {
-        console.log(JSON.stringify(data));
-        return JSON.stringify(newdata);
-      });
-      } else {
-      console.log("No launch with that id found");
-      //TODO: Error handling
-      }
+		  var id = addLaunchHelper(newdata, 'flight_number'); //We normally don't have id for post since we target a collection
+		  //First check if we returned null or not. If not, we can continue with checking for existence
+		  if (id && doesNotExist(data, id, 'flight_number') == 1) {
+			  //TODO: Add something that checks that newdata is in valid format!
+			  data.push(newdata)
+			  return collection.updateOne({user: user}, {$set: {launches: JSON.stringify(data)}}).then(res => {
+				console.log(JSON.stringify(data));
+				return JSON.stringify(newdata);
+			  });
+		  } else {
+			  //TODO: Error handling
+		  }
+	  } else {
+		  console.log("No launch with that id found");
+		  //TODO: Error handling
+	  }
     });
   } else { //Not using -d '{"data": "stuff"}'
     
@@ -903,13 +925,19 @@ function addLaunchpad(user, newdata){
   if (newdata) {
     return getLaunchpads(user).then(data => {
       if (data) { //Update stuff
-      console.log("updating!");
-      //TODO: Add something that checks that newdata is in valid format!
-      data.push(newdata)
-      return collection.updateOne({user: user}, {$set: {launchpads: JSON.stringify(data)}}).then(res => {
-        console.log(JSON.stringify(data));
-        return JSON.stringify(newdata);
-      });
+		  var id = addLaunchpadHelper(newdata, 'id'); //We normally don't have id for post since we target a collection
+		  //First check if we returned null or not. If not, we can continue with checking for existence
+		  if (id && doesNotExist(data, id, 'id') == 1) {
+			  console.log("updating!");
+			  //TODO: Add something that checks that newdata is in valid format!
+			  data.push(newdata)
+			  return collection.updateOne({user: user}, {$set: {launchpads: JSON.stringify(data)}}).then(res => {
+				console.log(JSON.stringify(data));
+				return JSON.stringify(newdata);
+			  });
+		  } else {
+			  //TODO: Error handling
+		  }
       } else {
       console.log("No launchpad with that id found");
       //TODO: Error handling
@@ -922,7 +950,8 @@ function addLaunchpad(user, newdata){
 
 //Returns the updated object with the id if updated else returns null
 //Mutate data inside helper before updating our collection
-function updateHelper(data, id, attr, newdata) {
+//Last parameter is a function to enforce the attributes if we end up having to make a new entry
+function updateHelper(data, id, attr, newdata, enforceAttributes) {
 	//Tracks if we had any errors inside while trying to update key
 	var err = 0
 	var success = 0
@@ -964,6 +993,16 @@ function updateHelper(data, id, attr, newdata) {
 			}
 		}
 	}
+	//Doesn't exist already and no errors -> Make new 
+	if (err == 0) {
+		//Note that we don't allow the -d {} to contain attr otherwise someone can change the id of objects and we lose uniqueness
+		newdata[attr] = id; //Set it now.
+		//Enforce min attributes
+		if (enforceAttributes(newdata, attr)) {
+			data.push(newdata)
+			return data[data.length - 1];
+		}
+	}
 	//Didn't find anything
 	return null;
 }
@@ -973,7 +1012,7 @@ function updateVehicle(user, id, newdata) {
     if (newdata) {
 		return getVehicles(user).then(data => {
 		  if (data) { //Update stuff
-				var result = updateHelper(data, id, 'id', newdata);
+				var result = updateHelper(data, id, 'id', newdata, addVehicleHelper);
 				if (result) { //Means we got back data!
 					return collection.updateOne({user: user}, {$set: {vehicles: JSON.stringify(data)}}).then(res => {
 						//console.log(data);
@@ -997,7 +1036,7 @@ function updateLaunch(user, id, newdata) {
     if (newdata) {
 		return getLaunches(user).then(data => {
 		  if (data) { //Update stuff
-				var result = updateHelper(data, id, 'flight_number', newdata);
+				var result = updateHelper(data, id, 'flight_number', newdata, addLaunchHelper);
 				if (result) { //Means we got back data!
 					return collection.updateOne({user: user}, {$set: {launches: JSON.stringify(data)}}).then(res => {
 						//console.log(data);
@@ -1021,7 +1060,7 @@ function updateLaunchpad(user, id, newdata) {
     if (newdata) {
 		return getLaunchpads(user).then(data => {
 		  if (data) { //Update stuff
-				var result = updateHelper(data, id, 'id', newdata);
+				var result = updateHelper(data, id, 'id', newdata, addLaunchpadHelper);
 				if (result) { //Means we got back data!
 					return collection.updateOne({user: user}, {$set: {launchpads: JSON.stringify(data)}}).then(res => {
 						//console.log(data);
