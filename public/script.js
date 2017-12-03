@@ -37,6 +37,14 @@ $(document).ready(function() {
     dataType: 'json'
       }).then(data => {
         console.log(data);
+        $.each(data, function (i,elem){
+                var result = $('<div>')
+                    //.attr('id', elem.id)
+                    .addClass('message')
+                    .text(elem.data);
+
+                result.appendTo('.tab-view');
+            })
       }).catch(err => {
         console.log(err)
         alert('Failed to retrieve message.')
