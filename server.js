@@ -347,6 +347,27 @@ app.route('/api/messages')
    })
   });
 
+  app.route('/api/messages/:id')
+    .get((req, res) => {
+      getMessages(req.params.id).then(data => {
+        if (data) {
+          res.send(data);
+        } else {
+          res.sendStatus(404);
+        }
+      }).catch(err => {
+        res.sendStatus(500);
+      })
+    })
+    .delete((req, res) => {
+      deleteMessages(req.params.id).then(data => {
+        res.sendStatus(200);
+      }).catch(err => {
+        // TODO
+      })
+    });
+
+
 app.get('/api', (req, res) => {
   res.send({
     links: {
@@ -1190,9 +1211,13 @@ function deleteLaunchpad(user, id) {
 }
 
 // ========== Get/Add/Delete messages from database ==========
-function getMessages() {
+function getMessages(id) {
   return collection.find({user: "admin"}).limit(1).next().then(res => {
-    return JSON.parse(res.messages);
+    if (id) {
+      return JSON.parse(res.messages).find(elem => elem.id == id);
+    } else {
+      return JSON.parse(res.messages);
+    }
   });
 }
 
@@ -1208,11 +1233,32 @@ function addMessages(newdata) {
 			return newdata;
 		  });
     } else {
-      console.log("No vehicle with that id found");
+      console.log("No Messages with that id found");
       //TODO: Error handling
     }
     });
   } else { //Not using -d '{"data": "stuff"}'
 
   }
+}
+
+function deleteMessages(id) {
+    return getMessages().then(data => {
+      if (data) { //Can try to delete something
+		var found = deleteHelper(data, id, 'id');
+		console.log(found);
+		if (found) { //Before updating, check if we actually found anything
+			return collection.updateOne({user: 'admin'}, {$set: {messages: JSON.stringify(data)}}).then(res => {
+				//console.log(data);
+				return found;
+		    });
+		} else {
+      console.log("No Messages with that id found");
+			//TODO: Error handling
+		}
+	  } else {
+		console.log("No Messages");
+		//TODO: Error handling
+	  }
+    });
 }
