@@ -28,4 +28,19 @@ $(document).ready(function() {
     // Add active flag to clicked tab 
     $(this).addClass('active');
   });
+
+
+// Ajax call for messages 
+  $.ajax({
+    url: '/api/messages',
+    method: 'GET',
+    dataType: 'json'
+      }).then(data => {
+        console.log(data);
+      }).catch(err => {
+        console.log(err)
+        alert('Failed to retrieve message.')
+    })
+
+
 })
