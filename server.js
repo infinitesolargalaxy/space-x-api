@@ -110,6 +110,17 @@ app.route('/vehicles')
     }).catch(err => {
       // TODO
     })
+  })
+  .post((req,res) =>{
+    addVehicle(req.user, req.params.id, req.body).then (data => {
+      res.render('vehicles/index', {
+        title: "Vehicle " + req.params.id,
+        data: [data],
+        isLoggedIn: req.user
+      });
+    }).catch(err => {
+      //TODO
+    })
   });
 
 // A vehicle
@@ -146,17 +157,6 @@ app.route('/vehicles/:id')
     }).catch(err => {
       // TODO
     })
-  })
-  .post((req,res) =>{
-    addVehicle(req.user, req.params.id, req.body).then (data => {
-      res.render('vehicles/index', {
-        title: "Vehicle " + req.params.id,
-        data: [data],
-        isLoggedIn: req.user
-      });
-    }).catch(err => {
-      //TODO
-    })
   });
 
 // Launches collection. /launches, /launches?vehicle=<id>, /launches?launchpad=<id>
@@ -166,6 +166,17 @@ app.route('/launches')
       res.render('launches/index', {
         title: "Launches",
         data: data,
+        isLoggedIn: req.user
+      });
+    }).catch(err => {
+      // TODO
+    })
+  })
+  .post((req, res) => {
+    addLaunch(req.user, req.params.id, req.body).then(data => {
+      res.render('launches/index', {
+        title: "Launch #" + req.params.id,
+        data: [data],
         isLoggedIn: req.user
       });
     }).catch(err => {
@@ -207,17 +218,6 @@ app.route('/launches/:id')
     }).catch(err => {
       // TODO
     })
-  })
-  .post((req, res) => {
-    addLaunch(req.user, req.params.id, req.body).then(data => {
-      res.render('launches/index', {
-        title: "Launch #" + req.params.id,
-        data: [data],
-        isLoggedIn: req.user
-      });
-    }).catch(err => {
-      // TODO
-    })
   });
 
 // Launchpads collection
@@ -227,6 +227,17 @@ app.route('/launchpads')
       res.render('launchpads/index', {
         title: "Launchpads",
         data: data,
+        isLoggedIn: req.user
+      });
+    }).catch(err => {
+      // TODO
+    })
+  })
+  .post((req, res) => {
+    addLaunchpad(req.user, req.params.id, req.body).then(data => {
+      res.render('launchpads/index', {
+        title: "Launchpad " + req.params.id,
+        data: [data],
         isLoggedIn: req.user
       });
     }).catch(err => {
@@ -260,17 +271,6 @@ app.route('/launchpads/:id')
   })
   .delete((req, res) => {
     deleteLaunchpad(req.user, req.params.id).then(data => {
-      res.render('launchpads/index', {
-        title: "Launchpad " + req.params.id,
-        data: [data],
-        isLoggedIn: req.user
-      });
-    }).catch(err => {
-      // TODO
-    })
-  })
-  .post((req, res) => {
-    addLaunchpad(req.user, req.params.id, req.body).then(data => {
       res.render('launchpads/index', {
         title: "Launchpad " + req.params.id,
         data: [data],
@@ -322,6 +322,13 @@ app.route('/api/vehicles')
     }).catch(err => {
       // TODO
     })
+  })
+  .post((req, res) => {
+    addVehicle(req.user, req.params.id, req.body).then(data => {
+      res.send(data);
+    }).catch(err => {
+      // TODO
+    })
   });
 
 app.route('/api/vehicles/:id')
@@ -364,13 +371,6 @@ app.route('/api/vehicles/:id')
     }).catch(err => {
       // TODO
     })
-  })
-  .post((req, res) => {
-    addVehicle(req.user, req.params.id, req.body).then(data => {
-      res.send(data);
-    }).catch(err => {
-      // TODO
-    })
   });
 
 app.route('/api/launches')
@@ -384,6 +384,13 @@ app.route('/api/launches')
           launchpad_launches: '/api/launches?launchpad=<id>'
         }
       });
+    }).catch(err => {
+      // TODO
+    })
+  })
+  .post((req, res) => {
+    addLaunch(req.user, req.params.id, req.body).then(data => {
+      res.send(data);
     }).catch(err => {
       // TODO
     })
@@ -431,13 +438,6 @@ app.route('/api/launches/:id')
     }).catch(err => {
       // TODO
     })
-  })
-  .post((req, res) => {
-    addLaunch(req.user, req.params.id, req.body).then(data => {
-      res.send(data);
-    }).catch(err => {
-      // TODO
-    })
   });
 
 app.route('/api/launchpads')
@@ -449,6 +449,13 @@ app.route('/api/launchpads')
           launchpad: '/api/launchpads/<id>'
         }
       });
+    }).catch(err => {
+      // TODO
+    })
+  })
+  .post((req, res) => {
+    updateLaunchpad(req.user, req.params.id, req.body).then(data => {
+      res.send(data);
     }).catch(err => {
       // TODO
     })
@@ -491,13 +498,6 @@ app.route('/api/launchpads/:id')
           vehicle_launches: '/api/launches?vehicle=' + data.id
         }
       });*/
-    }).catch(err => {
-      // TODO
-    })
-  })
-  .post((req, res) => {
-    updateLaunchpad(req.user, req.params.id, req.body).then(data => {
-      res.send(data);
     }).catch(err => {
       // TODO
     })
