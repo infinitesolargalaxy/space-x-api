@@ -1233,7 +1233,7 @@ function addMessages(newdata) {
 			return newdata;
 		  });
     } else {
-      console.log("No vehicle with that id found");
+      console.log("No Messages with that id found");
       //TODO: Error handling
     }
     });
