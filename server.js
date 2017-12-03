@@ -443,7 +443,7 @@ app.route('/api/launches')
       res.send({
         data: data,
         links: {
-          launch: '/api/launches/flight_number',
+          launch: '/api/launches/<flight_number>',
           vehicle_launches: '/api/launches?vehicle=<id>',
           launchpad_launches: '/api/launches?launchpad=<id>'
         }
@@ -657,6 +657,25 @@ function addUser(user, password) {
   });
 }
 
+// ========== Helper function to remove extra keys from data ==========
+function removeKeys(data, keysToKeep) {
+  if (data instanceof Array) {
+    data.forEach(elem => {
+      Object.keys(elem).forEach(key => {
+        if (!keysToKeep.includes(key)) {
+          delete elem[key];
+        }
+      });
+    });
+  } else {
+    Object.keys(data).forEach(key => {
+      if (!keysToKeep.includes(key)) {
+        delete data[key];
+      }
+    });
+  }
+}
+
 // ========== Get data from Space-X API or database ==========
 function getVehicles(user, id) {
   if (user) {  // Logged in
@@ -680,7 +699,10 @@ function getVehicles(user, id) {
           reject(err);
         } else {
           if (res.statusCode == 200) {
-            resolve(JSON.parse(body));
+            var data = JSON.parse(body);
+            var vehicleKeys = ['id', 'name', 'description', 'active', 'first_flight', 'cost_per_launch', 'success_rate_pct'];
+            removeKeys(data, vehicleKeys);
+            resolve(data);
           } else {
             resolve(undefined);
           }
@@ -719,10 +741,13 @@ function getLaunches(user, id, vehicle_id, launchpad_id) {
         if (err) {
           reject(err);
         } else {
+          var data = JSON.parse(body);
+          var launchKeys = ['flight_number', 'details', 'rocket', 'launch_site', 'launch_date_local', 'launch_success'];
+          removeKeys(data, launchKeys);
           if (id) {
-            resolve(JSON.parse(body).find(elem => elem.flight_number == id));
+            resolve(data.find(elem => elem.flight_number == id));
           } else {
-            resolve(JSON.parse(body));
+            resolve(data);
           }
         }
       });
@@ -752,7 +777,10 @@ function getLaunchpads(user, id) {
           reject(err);
         } else {
           if (res.statusCode == 200) {
-            resolve(JSON.parse(body));
+            var data = JSON.parse(body);
+            var launchpadKeys = ['id', 'full_name', 'details', 'status', 'location'];
+            removeKeys(data, launchpadKeys);
+            resolve(data);
           } else {
             resolve(undefined);
           }
