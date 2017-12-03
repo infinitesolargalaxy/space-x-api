@@ -77,7 +77,7 @@ app.route('/login')
         res.redirect('/');
 		//TODO: Remove this print
 		db.collection("teamundefined").find({}, {_id: false, launches: false, launchpads: false}).toArray(function (err, res) {
-			if (err) { 
+			if (err) {
 			console.log(err);
 			} else {
 				console.log("Find:");
@@ -330,6 +330,15 @@ app.route('/launchpads/:id')
   });
 
 // ========== API routes ==========
+app.route('/api/messages')
+  .get((req, res) => {
+    getMessages().then(data => {
+      res.send(data);
+    }).catch(err => {
+      // TODO
+    })
+  })
+
 app.get('/api', (req, res) => {
   res.send({
     links: {
@@ -558,7 +567,7 @@ app.route('/api/launchpads/:id')
 		res.sendStatus(401);
 	}
   });
-  
+
 // ========== Helper function for use in ejs files to format output ==========
 app.locals.printProperty = function(elem, key, keyName, pre, suf) {
   if (elem.hasOwnProperty(key)) {
@@ -892,7 +901,7 @@ function addVehicle(user, newdata) {
 		  return collection.updateOne({user: user}, {$set: {vehicles: JSON.stringify(data)}}).then(res => {
 			console.log(JSON.stringify(data));
 			return newdata;
-		  });  
+		  });
 	  } else {
 		console.log("Invalid data");
 		//TODO: Error handling
@@ -903,7 +912,7 @@ function addVehicle(user, newdata) {
     }
     });
   } else { //Not using -d '{"data": "stuff"}'
-    
+
   }
 }
 
@@ -930,7 +939,7 @@ function addLaunch(user, newdata){
 	  }
     });
   } else { //Not using -d '{"data": "stuff"}'
-    
+
   }
 }
 
@@ -958,7 +967,7 @@ function addLaunchpad(user, newdata){
       }
     });
   } else { //Not using -d '{"data": "stuff"}'
-    
+
   }
 }
 
@@ -984,7 +993,7 @@ function updateHelper(data, id, attr, newdata, enforceAttributes) {
 						err++;
 						break;
 					//Make sure that our original data already has this data as well, otherwise we are trying to update a non-existing field!
-					} else if (data[i].hasOwnProperty(key)) { 
+					} else if (data[i].hasOwnProperty(key)) {
 						console.log(key + " -> " + newdata[key]);
 						console.log(key + " -> " + data[i][key]);
 						//Update the data!
@@ -1007,7 +1016,7 @@ function updateHelper(data, id, attr, newdata, enforceAttributes) {
 			}
 		}
 	}
-	//Doesn't exist already and no errors -> Make new 
+	//Doesn't exist already and no errors -> Make new
 	if (err == 0) {
 		//Note that we don't allow the -d {} to contain attr otherwise someone can change the id of objects and we lose uniqueness
 		newdata[attr] = id; //Set it now.
@@ -1041,7 +1050,7 @@ function updateVehicle(user, id, newdata) {
 		  }
 		});
 	} else { //Not using -d '{"data": "stuff"}'
-		
+
 	}
 }
 
