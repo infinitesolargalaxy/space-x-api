@@ -26,6 +26,7 @@ const INVALID_FORMAT = {error: 400, data: "Data is in invalid format."}; //Missi
 app.set('view engine', 'ejs');     // res.render('foo') -> /views/foo.ejs
 app.use(express.static('public'))  // /foo -> /public/foo
 app.use(bodyParser.json());        // -d '{"foo": "value"}' -> req.body.foo
+app.use(bodyParser.urlencoded({ extended: true })); //The current express form requires this!
 app.use(cookieParser());           // -H "Cookie: foo=value" -> req.cookies.foo
 
 app.use((req, res, next) => {      // Authenticator. Adds req.user field if successfully logged in.
@@ -76,9 +77,21 @@ app.get('/', (req, res) => {
 // Login page and request
 app.route('/login')
   .get((req, res) => {
-    // TODO: Move this to POST and have a proper login form for GET
-    var username = 'john';  // Hard code login to john
-    var password = 'a';
+	  //Send them to the login page
+	  res.render('login/index', {
+			title: "Login",
+			data: null,
+			isLoggedIn: req.user
+	  });
+  })
+.post((req, res) => {
+    //var username = 'john';  // Hard code login to john
+    //var password = 'a';
+	var username = req.body.username;
+	var password = req.body.password;
+	console.log(req.body.username);
+	console.log(req.body.password);
+	console.log(req.body);
     checkAuth(username, password).then(isAuthorized => {
       if (isAuthorized) {  // Authorized
         res.cookie('user', username);
@@ -93,12 +106,34 @@ app.route('/login')
 			}
 		});
       } else {  // Unauthorized
-        res.sendStatus(401);
+        //res.sendStatus(401);
+		res.status(401).render('login/index', {
+			title: "Login",
+			data: null,
+			isLoggedIn: req.user
+		});
       }
     }).catch(err => {
       // TODO
     });
-  });
+  })
+  
+app.route('/signup')
+ .post((req, res) => {
+	var username = req.body.username;
+	var password = req.body.password;
+	console.log(req.body.username);
+	console.log(req.body.password);
+	addUser(username, password).then(res => {  // Hard code user john
+      console.log("(added user %s with password %s)", username, password);
+    })
+	.catch(err => {
+      // TODO
+    });
+	//Send them to home page?
+	res.clearCookie('user');
+    res.redirect('/');
+  })
 
 // Logout request
 app.get('/logout', (req, res) => {

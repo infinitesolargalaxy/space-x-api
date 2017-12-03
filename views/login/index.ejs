@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <% include ../head %>
+  <body>
+    <% var active = "login"; %>
+    <% include ../nav %>
+    <!-- Tab views -->
+    <div class="tab-view">
+      <div id="login">
+		<h2><%= title %></h2>
+        <ul class="results">
+			<li id=login class="result">
+				<form method="post" action="/login">
+				  <p>
+					<label>Username:</label>
+					<input type="text" name="username">
+				  </p>
+				  <p>
+					<label>Password:</label>
+					<input type="text" name="password">
+				  </p>
+				  <p>
+					<input type="submit" value="Login">
+				  </p>
+				</form>
+			</li>
+			<li id=signup class="result">
+				<form method="post" action="/signup">
+				  <p>
+					<label>Username:</label>
+					<input type="text" name="username">
+				  </p>
+				  <p>
+					<label>Password:</label>
+					<input type="text" name="password">
+				  </p>
+				  <p>
+					<input type="submit" value="Make new account">
+				  </p>
+				</form>
+			</li>
+        </ul>
+	  </div>
+    </div>
+    <% include ../footer %>
+    <% include ../script %>
+  </body>
+</html>
