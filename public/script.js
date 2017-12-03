@@ -43,7 +43,7 @@ $(document).ready(function() {
                     .addClass('message')
                     .text(elem.data);
 
-                result.appendTo('.tab-view');
+                result.prependTo('.tab-view');
             })
       }).catch(err => {
         console.log(err)
