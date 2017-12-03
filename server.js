@@ -15,6 +15,13 @@ var db;  // Database
 var collection;  // Collection in database
 var message_id = 0;
 
+/* List of Errors */
+const COLLECTION_UPDATE_ERROR = {error: 500, data: "Failed to update collection."};
+const ID_DOES_NOT_EXIST = {error: 400, data: "Specified ID does not exist."}; //Used for delete and put when id is specified
+const COLLECTION_DOES_NOT_EXIST = {error: 500, data: "Failed to get collection."}; //When getting from collection returns nothing.
+const NO_DATA = {error: 400, data: "Include data in request."}; //When newdata from -d '{}' doesn't exist
+const INVALID_FORMAT = {error: 400, data: "Data is in invalid format."}; //Missing attributes from the minimum required attributes.
+
 // ========== Configure app ==========
 app.set('view engine', 'ejs');     // res.render('foo') -> /views/foo.ejs
 app.use(express.static('public'))  // /foo -> /public/foo
@@ -121,7 +128,8 @@ app.route('/vehicles')
 			isLoggedIn: req.user
 		  });
 		}).catch(err => {
-		  //TODO
+		 console.log("Sending %d", err.error); //400 is bad request
+		  res.status(err.error).send({data: err.data});
 		})
 	} else {
 		res.sendStatus(401);
@@ -154,7 +162,8 @@ app.route('/vehicles/:id')
 			isLoggedIn: req.user
 		  });
 		}).catch(err => {
-		  // TODO
+		  console.log("Sending %d", err.error); //400 is bad request
+		  res.status(err.error).send({data: err.data});
 		})
 	} else {
 		res.sendStatus(401);
@@ -169,7 +178,8 @@ app.route('/vehicles/:id')
 			isLoggedIn: req.user
 		  });
 		}).catch(err => {
-		  // TODO
+		  console.log("Sending %d", err.error); //400 is bad request
+		  res.status(err.error).send({data: err.data});
 		})
 	} else {
 		res.sendStatus(401);
@@ -198,7 +208,8 @@ app.route('/launches')
 			isLoggedIn: req.user
 		  });
 		}).catch(err => {
-		  // TODO
+		  console.log("Sending %d", err.error); //400 is bad request
+		  res.status(err.error).send({data: err.data});
 		})
 	} else {
 		res.sendStatus(401);
@@ -231,7 +242,8 @@ app.route('/launches/:id')
 			isLoggedIn: req.user
 		  });
 		}).catch(err => {
-		  // TODO
+		  console.log("Sending %d", err.error); //400 is bad request
+		  res.status(err.error).send({data: err.data});
 		})
 	} else {
 		res.sendStatus(401);
@@ -246,7 +258,8 @@ app.route('/launches/:id')
 			isLoggedIn: req.user
 		  });
 		}).catch(err => {
-		  // TODO
+		  console.log("Sending %d", err.error); //400 is bad request
+		  res.status(err.error).send({data: err.data});
 		})
 	} else {
 		res.sendStatus(401);
@@ -275,7 +288,8 @@ app.route('/launchpads')
 			isLoggedIn: req.user
 		  });
 		}).catch(err => {
-		  // TODO
+		 console.log("Sending %d", err.error); //400 is bad request
+		  res.status(err.error).send({data: err.data});
 		})
 	} else {
 		res.sendStatus(401);
@@ -308,7 +322,8 @@ app.route('/launchpads/:id')
 			isLoggedIn: req.user
 		  });
 		}).catch(err => {
-		  // TODO
+		  console.log("Sending %d", err.error); //400 is bad request
+		  res.status(err.error).send({data: err.data});
 		})
 	} else {
 		res.sendStatus(401);
@@ -323,7 +338,8 @@ app.route('/launchpads/:id')
 			isLoggedIn: req.user
 		  });
 		}).catch(err => {
-		  // TODO
+		  console.log("Sending %d", err.error); //400 is bad request
+		  res.status(err.error).send({data: err.data});
 		})
 	} else {
 		res.sendStatus(401);
@@ -344,6 +360,7 @@ app.route('/api/messages')
      res.send(data);
    }).catch(err => {
      // TODO
+	 res.sendStatus(500);
    })
   });
 
@@ -414,9 +431,11 @@ app.route('/api/vehicles')
 		addVehicle(req.user, req.body).then(data => {
 		  res.send(data);
 		}).catch(err => {
-		  // TODO
+		  console.log("Sending %d", err.error); //400 is bad request
+		  res.status(err.error).send({data: err.data});
 		})
 	} else {
+		console.log("Sending 401");
 		res.sendStatus(401);
 	}
   });
@@ -444,7 +463,8 @@ app.route('/api/vehicles/:id')
 		updateVehicle(req.user, req.params.id, req.body).then(data => {
 		  res.send(data);
 		}).catch(err => {
-		  // TODO
+		  console.log("Sending %d", err.error);
+		  res.status(err.error).send({data: err.data});
 		})
 	} else {
 		res.sendStatus(401);
@@ -455,7 +475,8 @@ app.route('/api/vehicles/:id')
 		deleteVehicle(req.user, req.params.id).then(data => {
 		  res.sendStatus(200);
 		}).catch(err => {
-		  // TODO
+		  console.log("Sending %d", err.error); //400 is bad request
+		  res.status(err.error).send({data: err.data});
 		})
 	} else {
 		res.sendStatus(401);
@@ -482,7 +503,8 @@ app.route('/api/launches')
 		addLaunch(req.user, req.body).then(data => {
 		  res.send(data);
 		}).catch(err => {
-		  // TODO
+		  console.log("Sending %d", err.error); //400 is bad request
+		  res.status(err.error).send({data: err.data});
 		})
 	} else {
 		res.sendStatus(401);
@@ -513,7 +535,8 @@ app.route('/api/launches/:id')
 		updateLaunch(req.user, req.params.id, req.body).then(data => {
 		  res.send(data);
 		}).catch(err => {
-		  // TODO
+		  console.log("Sending %d", err.error); //400 is bad request
+		  res.status(err.error).send({data: err.data});
 		})
 	} else {
 		res.sendStatus(401);
@@ -524,7 +547,8 @@ app.route('/api/launches/:id')
 		deleteLaunch(req.user, req.params.id).then(data => {
 		  res.sendStatus(200);
 		}).catch(err => {
-		  // TODO
+		  console.log("Sending %d", err.error); //400 is bad request
+		  res.status(err.error).send({data: err.data});
 		})
 	} else {
 		res.sendStatus(401);
@@ -542,6 +566,7 @@ app.route('/api/launchpads')
       });
     }).catch(err => {
       // TODO
+	  res.sendStatus(500);
     })
   })
   .post((req, res) => {
@@ -549,7 +574,8 @@ app.route('/api/launchpads')
 		addLaunchpad(req.user, req.body).then(data => {
 		  res.send(data);
 		}).catch(err => {
-		  // TODO
+		  console.log("Sending %d", err.error); //400 is bad request
+		  res.status(err.error).send({data: err.data});
 		})
 	} else {
 		res.sendStatus(401);
@@ -579,7 +605,8 @@ app.route('/api/launchpads/:id')
 		updateLaunchpad(req.user, req.params.id, req.body).then(data => {
 			res.send(data);
 		}).catch(err => {
-		  res.sendStatus(500);
+		  console.log("Sending %d", err.error); //400 is bad request
+		  res.status(err.error).send({data: err.data});
 		})
 	} else {
 		res.sendStatus(401);
@@ -590,7 +617,8 @@ app.route('/api/launchpads/:id')
 		deleteLaunchpad(req.user, req.params.id).then(data => {
 		  res.sendStatus(200);
 		}).catch(err => {
-		  // TODO
+		  console.log("Sending %d", err.error); //400 is bad request
+		  res.status(err.error).send({data: err.data});
 		})
 	} else {
 		res.sendStatus(401);
@@ -826,6 +854,7 @@ curl -u john:a -d '{"id":"deathstar","full_name":"Peace Moon","status":"active",
 */
 
 //Enforces that the data does not already exist.
+//SHOULDN'T BE NEEDED IF WE ARE GENERATING UNIQUE keys!
 function doesNotExist(data, id, attr) {
 	for (var i = 0; i < data.length; i++) {
 		console.log('Index %d', i, data[i][attr], id);
@@ -924,7 +953,8 @@ function addVehicle(user, newdata) {
     if (data) { //Update stuff
 	  var id = addVehicleHelper(newdata, 'id'); //We normally don't have id for post since we target a collection
 	  //First check if we returned null or not. If not, we can continue with checking for existence
-      if (id && doesNotExist(data, id, 'id') == 1) {
+	  var exist; //Assign exist for error checking.
+      if (id && (exist = doesNotExist(data, id, 'id')) == 1) {
 			//TODO: Add something that checks that newdata is in valid format!
 		  data.push(newdata)
 		  return collection.updateOne({user: user}, {$set: {vehicles: JSON.stringify(data)}}).then(res => {
@@ -933,15 +963,14 @@ function addVehicle(user, newdata) {
 		  });
 	  } else {
 		console.log("Invalid data");
-		//TODO: Error handling
+		throw INVALID_FORMAT; //Apparently using this incorrectly causes an error to be returned, thus fulfilling our purpose... 
 	  }
     } else {
-      console.log("No vehicle with that id found");
-      //TODO: Error handling
+	  return COLLECTION_DOES_NOT_EXIST;
     }
     });
   } else { //Not using -d '{"data": "stuff"}'
-
+	  return INVALID_FORMAT;
   }
 }
 
@@ -951,8 +980,9 @@ function addLaunch(user, newdata){
     return getLaunches(user).then(data => {
       if (data) { //Update stuff
 		  var id = addLaunchHelper(newdata, 'flight_number'); //We normally don't have id for post since we target a collection
+		  var exist; //Assign exist for error checking.
 		  //First check if we returned null or not. If not, we can continue with checking for existence
-		  if (id && doesNotExist(data, id, 'flight_number') == 1) {
+		  if (id && (exist = doesNotExist(data, id, 'flight_number')) == 1) {
 			  //TODO: Add something that checks that newdata is in valid format!
 			  data.push(newdata)
 			  return collection.updateOne({user: user}, {$set: {launches: JSON.stringify(data)}}).then(res => {
@@ -1022,16 +1052,13 @@ function updateHelper(data, id, attr, newdata, enforceAttributes) {
 						err++;
 						break;
 					//Make sure that our original data already has this data as well, otherwise we are trying to update a non-existing field!
-					} else if (data[i].hasOwnProperty(key)) {
+					//Note: Even if original doesn't have it, we can just update it to have it.
+					} else {
 						console.log(key + " -> " + newdata[key]);
 						console.log(key + " -> " + data[i][key]);
 						//Update the data!
 						data[i][key] = newdata[key]
 						success++;
-					} else {
-						//Can't update a non existing attribute!
-						err++;
-						break;
 					}
 				}
 			}
@@ -1071,15 +1098,14 @@ function updateVehicle(user, id, newdata) {
 						return result;
 					});
 				} else {
-					//Error handling
+					throw INVALID_FORMAT; //400
 				}
 		  } else {
-			console.log("No vehicle with that id found");
-			//TODO: Error handling
+			throw COLLECTION_DOES_NOT_EXIST; //500
 		  }
 		});
 	} else { //Not using -d '{"data": "stuff"}'
-
+		throw NO_DATA; //400
 	}
 }
 
@@ -1095,15 +1121,14 @@ function updateLaunch(user, id, newdata) {
 						return result;
 					});
 				} else {
-					//Error handling
+					throw INVALID_FORMAT; //400
 				}
 		  } else {
-			console.log("No launch with that id found");
-			//TODO: Error handling
+			throw COLLECTION_DOES_NOT_EXIST; //500
 		  }
 		});
 	} else { //Not using -d '{"data": "stuff"}'
-		//TODO: Error handling
+		throw NO_DATA; //400
 	}
 }
 
@@ -1119,15 +1144,14 @@ function updateLaunchpad(user, id, newdata) {
 						return result;
 					});
 				} else {
-					//Error handling
+					throw INVALID_FORMAT; //400
 				}
 		  } else {
-			console.log("No launch with that id found");
-			//TODO: Error handling
+			throw COLLECTION_DOES_NOT_EXIST; //500
 		  }
 		});
 	} else { //Not using -d '{"data": "stuff"}'
-		//TODO: Error handling
+		throw NO_DATA; //400
 	}
 }
 
@@ -1159,13 +1183,15 @@ function deleteVehicle(user, id) {
 			return collection.updateOne({user: user}, {$set: {vehicles: JSON.stringify(data)}}).then(res => {
 				//console.log(data);
 				return found;
-		    });
+		    })
+			.catch(err => {
+				throw COLLECTION_UPDATE_ERROR; //500
+			});
 		} else {
-			//TODO: Error handling
+			throw ID_DOES_NOT_EXIST; //400
 		}
 	  } else {
-		console.log("No vehicle with that id found");
-		//TODO: Error handling
+		throw COLLECTION_DOES_NOT_EXIST; //500
 	  }
     });
 }
@@ -1179,13 +1205,15 @@ function deleteLaunch(user, id) {
 			return collection.updateOne({user: user}, {$set: {launches: JSON.stringify(data)}}).then(res => {
 				console.log(found);
 				return found;
-		    });
+		    })
+			.catch(err => {
+				throw COLLECTION_UPDATE_ERROR; //500
+			});
 		} else {
-			//TODO: Error handling
+			throw ID_DOES_NOT_EXIST; //400
 		}
 	  } else {
-		console.log("No vehicle with that id found");
-		//TODO: Error handling
+		throw COLLECTION_DOES_NOT_EXIST; //500
 	  }
     });
 }
@@ -1199,18 +1227,27 @@ function deleteLaunchpad(user, id) {
 			return collection.updateOne({user: user}, {$set: {launchpads: JSON.stringify(data)}}).then(res => {
 				//console.log(data);
 				return found;
-		    });
+		    })
+			.catch(err => {
+				throw COLLECTION_UPDATE_ERROR; //500
+			});
 		} else {
-			//TODO: Error handling
+			throw ID_DOES_NOT_EXIST; //400
 		}
 	  } else {
-		console.log("No vehicle with that id found");
-		//TODO: Error handling
+		throw COLLECTION_DOES_NOT_EXIST; //500
 	  }
     });
 }
 
 // ========== Get/Add/Delete messages from database ==========
+/*
+curl --request GET localhost:3000/api/messages/
+curl -u admin:admin -d '{"id":1,"data":"now"}' -H "Content-Type: application/json" --request POST localhost:3000/api/messages/
+curl -d '{"id":1,"data":"now"}' -H "Content-Type: application/json" --request POST localhost:3000/api/messages/
+curl --request GET localhost:3000/api/messages/1
+curl --request DELETE localhost:3000/api/messages/1
+*/
 function getMessages(id) {
   return collection.find({user: "admin"}).limit(1).next().then(res => {
     if (id) {
@@ -1253,7 +1290,7 @@ function deleteMessages(id) {
 				return found;
 		    });
 		} else {
-      console.log("No Messages with that id found");
+			console.log("No Messages with that id found");
 			//TODO: Error handling
 		}
 	  } else {
