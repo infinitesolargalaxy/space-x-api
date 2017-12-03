@@ -13,6 +13,7 @@ const dbURL = "mongodb://csc309f:csc309fall@ds117316.mlab.com:17316/csc309db";  
 const COLLECTION_NAME = 'teamundefined';
 var db;  // Database
 var collection;  // Collection in database
+var message_id = 0;
 
 // ========== Configure app ==========
 app.set('view engine', 'ejs');     // res.render('foo') -> /views/foo.ejs
@@ -338,6 +339,13 @@ app.route('/api/messages')
       // TODO
     })
   })
+  .post((req, res) => {
+   addMessages(req.body.data).then(data => {
+     res.send(data);
+   }).catch(err => {
+     // TODO
+   })
+  });
 
 app.get('/api', (req, res) => {
   res.send({
@@ -1186,4 +1194,25 @@ function getMessages() {
   return collection.find({user: "admin"}).limit(1).next().then(res => {
     return JSON.parse(res.messages);
   });
+}
+
+function addMessages(newdata) {
+  if (newdata) {
+    return getMessages().then(data => {
+    if (data) { //Update stuff
+     message_id = message_id + 1;
+     var with_id = {"id":message_id,"data":newdata};
+		 data.push(with_id);
+		 return collection.updateOne({user: "admin"}, {$set: {messages: JSON.stringify(data)}}).then(res => {
+			console.log(JSON.stringify(data));
+			return newdata;
+		  });
+    } else {
+      console.log("No vehicle with that id found");
+      //TODO: Error handling
+    }
+    });
+  } else { //Not using -d '{"data": "stuff"}'
+
+  }
 }
