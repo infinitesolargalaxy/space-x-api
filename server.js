@@ -26,19 +26,16 @@ app.use((req, res, next) => {      // Authenticator. Adds req.user field if succ
     checkAuth(auth.name, auth.pass).then(isAuthorized => {
       if (isAuthorized) {  // Authorized
         req.user = auth.name;
-        next();
       } else {  // Unauthorized
-        res.sendStatus(401);
+        return res.sendStatus(401);
       }
     }).catch(err => {
-      next(err);
+      return next(err);
     });
   } else if (req.cookies.user) {  // Already logged in through browser
     req.user = req.cookies.user;
-    next();
-  } else {  // Not logged in
-    next();
   }
+  next();
 });
 
 // Checks username and password credentials against database
@@ -127,13 +124,17 @@ app.route('/vehicles')
 app.route('/vehicles/:id')
   .get((req, res) => {
     getVehicles(req.user, req.params.id).then(data => {
-      res.render('vehicles/index', {
-        title: "Vehicle " + req.params.id,
-        data: [data],
-        isLoggedIn: req.user
-      });
+      if (data) {
+        res.render('vehicles/index', {
+          title: "Vehicle " + req.params.id,
+          data: [data],
+          isLoggedIn: req.user
+        });
+      } else {
+        res.sendStatus(404);
+      }
     }).catch(err => {
-      // TODO
+      res.sendStatus(500);
     })
   })
   .put((req, res) => {
@@ -188,13 +189,17 @@ app.route('/launches')
 app.route('/launches/:id')
   .get((req, res) => {
     getLaunches(req.user, req.params.id).then(data => {
-      res.render('launches/index', {
-        title: "Launch #" + req.params.id,
-        data: [data],
-        isLoggedIn: req.user
-      });
+      if (data) {
+        res.render('launches/index', {
+          title: "Launch #" + req.params.id,
+          data: [data],
+          isLoggedIn: req.user
+        });
+      } else {
+        res.sendStatus(404);
+      }
     }).catch(err => {
-      // TODO
+      res.sendStatus(500);
     })
   })
   .put((req, res) => {
@@ -249,13 +254,17 @@ app.route('/launchpads')
 app.route('/launchpads/:id')
   .get((req, res) => {
     getLaunchpads(req.user, req.params.id).then(data => {
-      res.render('launchpads/index', {
-        title: "Launchpad " + req.params.id,
-        data: [data],
-        isLoggedIn: req.user
-      });
+      if (data) {
+        res.render('launchpads/index', {
+          title: "Launchpad " + req.params.id,
+          data: [data],
+          isLoggedIn: req.user
+        });
+      } else {
+        res.sendStatus(404);
+      }
     }).catch(err => {
-      // TODO
+      res.sendStatus(500);
     })
   })
   .put((req, res) => {
@@ -334,15 +343,19 @@ app.route('/api/vehicles')
 app.route('/api/vehicles/:id')
   .get((req, res) => {
     getVehicles(req.user, req.params.id).then(data => {
-      res.send({
-        data: data,
-        links: {
-          vehicles: '/api/vehicles',
-          vehicle_launches: '/api/launches?vehicle=' + data.id
-        }
-      });
+      if (data) {
+        res.send({
+          data: data,
+          links: {
+            vehicles: '/api/vehicles',
+            vehicle_launches: '/api/launches?vehicle=' + data.id
+          }
+        });
+      } else {
+        res.sendStatus(404);
+      }
     }).catch(err => {
-      // TODO
+      res.sendStatus(500);
     })
   })
   .put((req, res) => {
@@ -399,16 +412,20 @@ app.route('/api/launches')
 app.route('/api/launches/:id')
   .get((req, res) => {
     getLaunches(req.user, req.params.id).then(data => {
-      res.send({
-        data: data,
-        links: {
-          launches: '/api/launches',
-          launch_vehicle: '/api/vehicle/' + data.rocket.rocket_id,
-          launch_launchpad: '/api/launchpads/' + data.launch_site.site_id
-        }
-      });
+      if (data) {
+        res.send({
+          data: data,
+          links: {
+            launches: '/api/launches',
+            launch_vehicle: '/api/vehicle/' + data.rocket.rocket_id,
+            launch_launchpad: '/api/launchpads/' + data.launch_site.site_id
+          }
+        });
+      } else {
+        res.sendStatus(404);
+      }
     }).catch(err => {
-      // TODO
+      res.sendStatus(500);
     })
   })
   .put((req, res) => {
@@ -464,15 +481,19 @@ app.route('/api/launchpads')
 app.route('/api/launchpads/:id')
   .get((req, res) => {
     getLaunchpads(req.user, req.params.id).then(data => {
-      res.send({
-        data: data,
-        links: {
-          launchpads: '/api/launchpads',
-          launchpad_launches: '/api/launches?launchpad=' + data.id
-        }
-      });
+      if (data) {
+        res.send({
+          data: data,
+          links: {
+            launchpads: '/api/launchpads',
+            launchpad_launches: '/api/launches?launchpad=' + data.id
+          }
+        });
+      } else {
+        res.sendStatus(404);
+      }
     }).catch(err => {
-      // TODO
+      res.sendStatus(500);
     })
   })
   .put((req, res) => {
@@ -563,8 +584,7 @@ MongoClient.connect(dbURL, (err, res) => {
 });
 
 // ====================================================================================================
-
-// ========== Get data from Space-X API or database ==========
+// ========== Helper function to add a new user ==========
 function addUser(user, password) {
   return collection.find({user: user}).limit(1).hasNext().then(res => {
     if (res) {
@@ -588,6 +608,7 @@ function addUser(user, password) {
   });
 }
 
+// ========== Get data from Space-X API or database ==========
 function getVehicles(user, id) {
   if (user) {  // Logged in
     // Use database
@@ -609,7 +630,11 @@ function getVehicles(user, id) {
         if (err) {
           reject(err);
         } else {
-          resolve(JSON.parse(body));
+          if (res.statusCode == 200) {
+            resolve(JSON.parse(body));
+          } else {
+            resolve(undefined);
+          }
         }
       });
     });
@@ -677,7 +702,11 @@ function getLaunchpads(user, id) {
         if (err) {
           reject(err);
         } else {
-          resolve(JSON.parse(body));
+          if (res.statusCode == 200) {
+            resolve(JSON.parse(body));
+          } else {
+            resolve(undefined);
+          }
         }
       });
     });
