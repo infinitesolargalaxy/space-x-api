@@ -66,7 +66,7 @@ $.ajax({
         alert('Failed to retrieve message.')
   })
 
-// Rpeated Ajax call for newly posted messages 
+// Repeated Ajax call for newly posted messages 
 function refreshMessages(){
   $.ajax({
     url: '/api/messages',
