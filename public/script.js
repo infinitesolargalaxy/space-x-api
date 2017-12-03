@@ -29,26 +29,80 @@ $(document).ready(function() {
     $(this).addClass('active');
   });
 
+// records message ids so it wont prepend duplicates on repeat
+var record = [];
 
-// Ajax call for messages 
+//initial get for page loading
+$.ajax({
+    url: '/api/messages',
+    method: 'GET',
+    dataType: 'json'
+      }).then(data => {
+        $.each(data, function (i,elem){
+
+          var dont_push = 0;
+
+          //initial push on entering website
+          for (index in record){
+            if (record[index] == elem.id){
+              dont_push = 1;
+            }
+          }
+          if (dont_push == 0){
+            record.push(elem.id);
+          }
+
+            var result = $('<div>')
+              //.attr('id', elem.id)
+              .addClass('message')
+              .text(elem.data);
+
+              result.prependTo('.tab-view');
+              
+          })
+
+      }).catch(err => {
+        console.log(err)
+        alert('Failed to retrieve message.')
+  })
+
+// Rpeated Ajax call for newly posted messages 
+function refreshMessages(){
   $.ajax({
     url: '/api/messages',
     method: 'GET',
     dataType: 'json'
       }).then(data => {
-        console.log(data);
         $.each(data, function (i,elem){
+
+          var message_present = 0;
+
+          // Detect if message is already prepended
+          for(index in record){
+            if (record[index] == elem.id){
+              message_present = 1;
+            }
+          }
+
+          // Prepend only if the message hasn't been prepended before
+          if (message_present == 0){
+            record.push(elem.id);
                 var result = $('<div>')
                     //.attr('id', elem.id)
                     .addClass('message')
                     .text(elem.data);
 
                 result.prependTo('.tab-view');
+              }
             })
+
       }).catch(err => {
         console.log(err)
         alert('Failed to retrieve message.')
     })
+}
 
+// Repeated ajax calls every X seconds. (second argument is in milliseconds)
+setInterval(refreshMessages, 5000);
 
 })

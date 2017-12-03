@@ -347,7 +347,7 @@ app.route('/api/messages')
    })
   });
 
-  app.route('/api/messages/:id')
+app.route('/api/messages/:id')
     .get((req, res) => {
       getMessages(req.params.id).then(data => {
         if (data) {
