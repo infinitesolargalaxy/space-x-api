@@ -11,6 +11,11 @@
         <ul class="results">
           <% data.forEach((elem, i) => { %>
             <li id=<%= elem.id %> class="result">
+			<td>
+            <form action="/vehicles/<%= elem.id %>?_method=DELETE" method="POST">
+              <button class="btn btn-default">Delete !</button>
+            </form>
+			</td>
               <h3><%= elem.name %></h3>
               <p><%= elem.description %></p>
               <ul>

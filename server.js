@@ -3,6 +3,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const basicAuth = require('basic-auth');
+const methodOverride = require("method-override");
 const request = require('request');
 const MongoClient = require('mongodb').MongoClient
 
@@ -27,6 +28,7 @@ app.set('view engine', 'ejs');     // res.render('foo') -> /views/foo.ejs
 app.use(express.static('public'))  // /foo -> /public/foo
 app.use(bodyParser.json());        // -d '{"foo": "value"}' -> req.body.foo
 app.use(bodyParser.urlencoded({ extended: true })); //The current express form requires this!
+app.use(methodOverride("_method"));
 app.use(cookieParser());           // -H "Cookie: foo=value" -> req.cookies.foo
 
 app.use((req, res, next) => {      // Authenticator. Adds req.user field if successfully logged in.
@@ -117,6 +119,13 @@ app.route('/login')
       // TODO
     });
   })
+
+  /*
+ app.get("/vehicles/:id/edit", (req, res) => {
+  res.render("vehicles/edit", {
+    course: db.findOne(req.params.id)
+  });
+});*/
   
 app.route('/signup')
  .post((req, res) => {
