@@ -20,8 +20,8 @@
                 <li>Success: <%= printProperty(elem, 'launch_success', '', '') %></li>
               </ul>
               <% if (isLoggedIn) { %>
-                <form action=<%= "/launches/" + elem.id + "?_method=DELETE" %> method="POST">
-                  <a href=<%= "/launches/" + elem.id + "/edit" %> class="btn"><i class="material-icons">edit</i></a>
+                <form action=<%= "/launches/" + elem.flight_number + "?_method=DELETE" %> method="POST">
+                  <a href=<%= "/launches/" + elem.flight_number + "/edit" %> class="btn"><i class="material-icons">edit</i></a>
                   <button class="btn"><i class="material-icons">delete</i></button>
                 </form>
               <% } %>
