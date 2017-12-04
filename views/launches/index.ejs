@@ -16,6 +16,7 @@
         <ul class="results">
           <% data.forEach((elem, i) => { %>
             <li id=<%= elem.flight_number %> class="result">
+			<% if (isLoggedIn) { %>
               <td>
                 <a href="/launches/edit/<%= elem.flight_number %>" class="btn btn-default">Edit</a>
               </td>
@@ -24,6 +25,7 @@
                 <button class="btn btn-default">Delete</button>
               </form>
              </td>
+			 <% } %>
               <h3>Launch #<%= elem.flight_number %></h3>
               <p><%= elem.details %></p>
               <ul>
