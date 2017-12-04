@@ -9,7 +9,7 @@
       <div id="vehicles">
 	    <% if (isLoggedIn) { %>
 			<td>
-				<a href="/vehicles/edit" class="btn btn-default">Add New Vehicle</a>
+				<a href="/vehicles/edit" class="button">Add New Vehicle</a>
 			</td>
 		<% } %>
         <h2><%= title %></h2>
@@ -19,7 +19,7 @@
 			<!-- Only let logged in users edit and delete -->
 			<% if (isLoggedIn) { %>
 			  <td>
-				<a href="/vehicles/edit/<%= elem.id %>" class="btn btn-default">Edit</a>
+				<a href="/vehicles/edit/<%= elem.id %>" class="button">Edit</a>
 			  </td>
 			  <td>
                 <form action="/vehicles/<%= elem.id %>?_method=DELETE" method="POST">

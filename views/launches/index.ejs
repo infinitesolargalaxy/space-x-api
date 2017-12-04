@@ -9,7 +9,7 @@
       <div id="launches">
 		<% if (isLoggedIn) { %>
 			<td>
-				<a href="/launches/edit/" class="btn btn-default">Add New Launch</a>
+				<a href="/launches/edit/" class="button">Add New Launch</a>
 			</td>
 		<% } %>
         <h2><%= title %></h2>
@@ -18,7 +18,7 @@
             <li id=<%= elem.flight_number %> class="result">
 			<% if (isLoggedIn) { %>
               <td>
-                <a href="/launches/edit/<%= elem.flight_number %>" class="btn btn-default">Edit</a>
+                <a href="/launches/edit/<%= elem.flight_number %>" class="button">Edit</a>
               </td>
               <td>
                 <form action="/launches/<%= elem.flight_number %>?_method=DELETE" method="POST">

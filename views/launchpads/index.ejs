@@ -9,7 +9,7 @@
       <div id="launchpads">
 	    <% if (isLoggedIn) { %>
 			<td>
-				<a href="/launchpads/edit/" class="btn btn-default">Add New Launchpad</a>
+				<a href="/launchpads/edit/" class="button">Add New Launchpad</a>
 			</td>
 		<% } %>
         <h2><%= title %></h2>
@@ -18,7 +18,7 @@
             <li id=<%= elem.id %> class="result">
 			  <% if (isLoggedIn) { %>
 			  <td>
-				<a href="/launchpads/edit/<%= elem.id %>" class="btn btn-default">Edit</a>
+				<a href="/launchpads/edit/<%= elem.id %>" class="button">Edit</a>
 			  </td>
 			  <td>
                 <form action="/launchpads/<%= elem.id %>?_method=DELETE" method="POST">
