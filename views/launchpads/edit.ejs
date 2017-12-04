@@ -7,38 +7,28 @@
     <!-- Tab views -->
     <div class="tab-view">
       <div id="launchpads">
-		<h2>Edit a launchpad</h2>
+		<h2>Edit a launch pad</h2>
 		<ul class="results">
-		<!-- "id", "name", "cost_per_launch","success_rate_pct","first_flight", "active", "description" -->
-		<li id=edit class="result">
-		  <form class="form" action="/launchpads/<%= launchpad.id %>?_method=<%= method %>" method="post">   
+		<!-- 'id', 'full_name', 'details', 'status', 'location' -->
+		  <form class="form" action="/launchpads/<%= launchpad.id %>?_method=PUT" method="post">   
 			<p>
 				<label>Name:</label>
-				<input id="name" type="text" placeholder="Enter spacecraft name" name="name" value="<%= vehicle.name %>">
+				<input id="full_name" type="text" placeholder="Enter launchpad name" name="full_name" value="<%= launchpad.full_name %>">
 			</p>
 			<p>
-			    <label>Cost per launch:</label>
-				<input id="cost_per_launch" type="text" placeholder="Enter in dollars" name="cost_per_launch" value="<%= vehicle.cost_per_launch %>">
+			    <label>Details:</label>
+				<input id="details" type="text"  placeholder="Enter details of the launchpad" name="details">
 			</p>
 			<p>
-				<label>Success rate:</label>
-				<input id="success_rate_pct" type="text" placeholder="Enter in percent" name="success_rate_pct" value="<%= vehicle.success_rate_pct %>">
+				<label>Status:</label>
+				<input id="status" type="text" placeholder="Enter whether this launchpad is in use" name="status">
 			</p>
 			<p>
-				<label>First Flight:</label>
-				<input id="first_flight" type="text" placeholder="YYYY-MM-DD" name="first_flight" value="<%= vehicle.first_flight %>">
-			</p>
-			<p>
-				<label>Active:</label>
-				<input id="active" type="text" placeholder="True/False" name="active" value="<%= vehicle.active %>">
-			</p>
-			<p>
-				<label>Description:</label>
-				<input id="description" type="text" placeholder="Enter a description" name="description" value="<%= vehicle.description %>">
+				<label>Location:</label>
+				<input id="location" type="text" placeholder="Enter the location of this launchpad" name="location">
 			</p>
 			<input type="submit" value="Submit" class="btn btn-default">
 		  </form>
-		 </li>
 		</ul>
       </div>
     </div>

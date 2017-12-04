@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <% include ../head %>
+  <body>
+    <% var active = "launches"; %>
+    <% include ../nav %>
+    <!-- Tab views -->
+    <div class="tab-view">
+      <div id="launches">
+		<h2>Edit a launch</h2>
+		<ul class="results">
+		<!-- 'flight_number', 'details', 'rocket', 'launch_site', 'launch_date_local', 'launch_success' -->
+		  <form class="form" action="/launches/<%= launch.flight_number %>?_method=PUT" method="post">   
+		<!--<p>
+				<label>Flight number:</label>
+				<input id="flight_number" type="text" name="flight_number">
+			</p> -->
+			<p>
+			    <label>Details:</label>
+				<input id="details" type="text" placeholder="Enter details" name="details" value="<%= launch.details %>">
+			</p>
+			<p>
+				<label>Vehicle:</label>
+				<input id="rocket" type="text" placeholder="Enter rocket used during this launch" name="rocket" value="<%= launch.rocket %>">
+			</p>
+			<p>
+				<label>Launch site:</label>
+				<input id="launch_site" type="text" placeholder="Enter launchsite used" name="launch_site" value="<%= launch.launch_site %>">
+			</p>
+			<p>
+				<label>Date:</label>
+				<input id="launch_date_local" type="text" placeholder="YYYT-MM-DD" name="launch_date_local" value="<%= launch.launch_date_local %>">
+			</p>
+			<p>
+				<label>Success:</label>
+				<input id="launch_success" type="text" placeholder="True/False" name="launch_success" value="<%= launch.launch_success %>">
+			</p>
+			<input type="submit" value="Submit" class="btn btn-default">
+		  </form>
+		</ul>
+      </div>
+    </div>
+    <% include ../footer %>
+    <% include ../script %>
+  </body>
+</html>

@@ -11,6 +11,14 @@
         <ul class="results">
           <% data.forEach((elem, i) => { %>
             <li id=<%= elem.flight_number %> class="result">
+              <td>
+              <a href="/launches/<%= elem.id %>/edit" class="btn btn-default">Edit</a>
+              </td>
+              <td>
+              <form action="/launches/<%= elem.id %>?_method=DELETE" method="POST">
+                <button class="btn btn-default">Delete !</button>
+              </form>
+             </td>
               <h3>Launch #<%= elem.flight_number %></h3>
               <p><%= elem.details %></p>
               <ul>
