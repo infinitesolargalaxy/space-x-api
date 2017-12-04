@@ -7,16 +7,19 @@
     <!-- Tab views -->
     <div class="tab-view">
       <div id="vehicles">
+		<td>
+			<a href="/vehicles/edit" class="btn btn-default">Add New Vehicle</a>
+		</td>
         <h2><%= title %></h2>
         <ul class="results">
           <% data.forEach((elem, i) => { %>
             <li id=<%= elem.id %> class="result">
 			<td>
-				<a href="/vehicles/<%= elem.id %>/edit" class="btn btn-default">Edit</a>
+				<a href="/vehicles/edit/<%= elem.id %>" class="btn btn-default">Edit</a>
 			</td>
 			<td>
             <form action="/vehicles/<%= elem.id %>?_method=DELETE" method="POST">
-              <button class="btn btn-default">Delete !</button>
+              <button class="btn btn-default">Delete</button>
             </form>
 			</td>
               <h3><%= elem.name %></h3>

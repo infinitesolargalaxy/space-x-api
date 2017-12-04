@@ -105,15 +105,12 @@ app.route('/login')
     });
   })
 
- app.get("/vehicles/:id/edit", (req, res) => {
-/*
-  res.render("vehicles/edit", {
-    vehicle: db.findOne(req.params.id)
-  });*/
+ app.get("/vehicles/edit/:id", (req, res) => {
   getVehicles(req.user, req.params.id).then(elem => {
       if (elem) {
 		res.render('vehicles/edit', {
 		vehicle: elem,
+		method: "put",
 		isLoggedIn: req.user
 		})
       } else {
@@ -123,10 +120,16 @@ app.route('/login')
       console.log(err);
       res.sendStatus(ERROR);
     })
-  /*res.render('vehicles/edit', {
-      vehicle: 
-      isLoggedIn: req.user
-    })*/
+});
+
+app.get("/vehicles/edit/", (req, res) => {
+	//Make an empty copy
+	elem = {id: "", name: "", cost_per_launch: "", success_rate_pct: "", first_flight: "", active: "", description: ""};
+	res.render('vehicles/edit', {
+		vehicle: elem,
+		method: "post",
+		isLoggedIn: req.user
+	})
 });
   
 // Signup request
