@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <% include head %>
+  <body>
+    <% var active = "login"; %>
+    <% include nav %>
+    <!-- Tab views -->
+    <div class="tab-view">
+      <div id="login">
+        <h2><%= title %></h2>
+        <ul class="results">
+          <li class="result">
+            <h3>Login</h3>
+            <form action="/login" method="post" >
+              <label for="username1">Username</label>
+              <input id="username1" name="username" type="text" placeholder="Enter your username">
+              <label for="password1">Password</label>
+              <input id="password1" name="password" type="password" placeholder="Enter your password">
+              <button type="submit">Login</button>
+            </form>
+          </li>
+          <li class="result">
+            <h3>Signup</h3>
+            <form action="/signup" method="post" >
+              <label for="username2">Username</label>
+              <input id="username2" name="username" type="text" placeholder="Enter a username">
+              <label for="password2">Password</label>
+              <input id="password2" name="password" type="password" placeholder="Enter a password">
+              <button type="submit">Signup</button>
+            </form>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <% include footer %>
+    <% include script %>
+  </body>
+</html>

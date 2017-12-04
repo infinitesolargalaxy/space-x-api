@@ -88,8 +88,8 @@ app.get('/', (req, res) => {
 // Login page and request
 app.route('/login')
   .get((req, res) => {
-    res.render('login/index', {
-      title: "Login",
+    res.render('login', {
+      title: "Login/Signup",
       data: null,
       isLoggedIn: req.user
     })
