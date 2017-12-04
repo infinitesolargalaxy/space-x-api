@@ -131,7 +131,62 @@ app.get("/vehicles/edit/", (req, res) => {
 		isLoggedIn: req.user
 	})
 });
-  
+
+app.get("/launches/edit/:id", (req, res) => {
+  getLaunches(req.user, Number(req.params.id)).then(elem => {
+      if (elem) {
+		res.render('launches/edit', {
+		launch: elem,
+		method: "put",
+		isLoggedIn: req.user
+		})
+      } else {
+        res.sendStatus(NOT_FOUND);
+      }
+    }).catch(err => {
+      console.log(err);
+      res.sendStatus(ERROR);
+    })
+});
+
+app.get("/launches/edit/", (req, res) => {
+  //Make an empty copy
+  elem = {flight_number: "", details: "", rocket: "", launch_site: "", launch_date_local: "", launch_success: ""};
+  res.render('launches/edit', {
+    launch: elem,
+    method: "post",
+    isLoggedIn: req.user
+  })
+});
+
+app.get("/launchpads/edit/:id", (req, res) => {
+  getLaunchpads(req.user, req.params.id).then(elem => {
+      if (elem) {
+		res.render('launchpads/edit', {
+		launchpad: elem,
+		method: "put",
+		isLoggedIn: req.user
+		})
+      } else {
+		console.log("%s!", req.params.id)
+        res.sendStatus(NOT_FOUND);
+      }
+    }).catch(err => {
+      console.log(err);
+      res.sendStatus(ERROR);
+    })
+});
+
+app.get("/launchpads/edit/", (req, res) => {
+  //Make an empty copy
+  elem = {id: "", full_name: "", details: "", status: "", location: ""};
+  res.render('launchpads/edit', {
+    launchpad: elem,
+    method: "post",
+    isLoggedIn: req.user
+  })
+});
+
 // Signup request
 app.route('/signup')
  .post((req, res) => {
@@ -319,7 +374,7 @@ app.route('/launchpads')
   .post((req, res) => {
     if (req.user) {
       addLaunchpad(req.user, req.body).then(elem => {
-        res.redirect('/launchpads' + elem.id);
+        res.redirect('/launchpads/' + elem.id);
       }).catch(err => {
         console.log(err);
         res.sendStatus(ERROR);
@@ -517,6 +572,7 @@ app.route('/api/launches/:id')
     })
   })
   .put((req, res) => {
+	console.log(req.body);
     if (req.user) {
       updateLaunch(req.user, Number(req.params.id), req.body).then(elem => {
         res.send(elem);
@@ -1121,7 +1177,7 @@ function updateLaunch(user, id, elem) {
 }
 
 function updateLaunchpad(user, id, elem) {
-  return getLaunchpad(user).then(data => {
+  return getLaunchpads(user).then(data => {
     elem.id = id;
     var index = data.map(elem => elem.id).indexOf(id);
     if (index === -1) {

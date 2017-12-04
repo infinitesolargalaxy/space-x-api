@@ -10,7 +10,7 @@
 		<h2>Edit a launch pad</h2>
 		<ul class="results">
 		<!-- 'id', 'full_name', 'details', 'status', 'location' -->
-		  <form class="form" action="/launchpads/<%= launchpad.id %>?_method=PUT" method="post">   
+		  <form class="form" action="/launchpads/<%= launchpad.id %>?_method=<%= method %>" method="post">   
 			<p>
 				<label>Name:</label>
 				<input id="full_name" type="text" placeholder="Enter launchpad name" name="full_name" value="<%= launchpad.full_name %>">
@@ -35,4 +35,3 @@
     <% include ../footer %>
     <% include ../script %>
   </body>
-</html>

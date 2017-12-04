@@ -10,22 +10,28 @@
 		<h2>Edit a launch</h2>
 		<ul class="results">
 		<!-- 'flight_number', 'details', 'rocket', 'launch_site', 'launch_date_local', 'launch_success' -->
-		  <form class="form" action="/launches/<%= launch.flight_number %>?_method=PUT" method="post">   
-		<!--<p>
-				<label>Flight number:</label>
-				<input id="flight_number" type="text" name="flight_number">
-			</p> -->
+		  <form class="form" action="/launches/<%= launch.flight_number %>?_method=<%= method %>" method="post">   
 			<p>
 			    <label>Details:</label>
 				<input id="details" type="text" placeholder="Enter details" name="details" value="<%= launch.details %>">
 			</p>
+			<h2>Vehicle</h2>
 			<p>
-				<label>Vehicle:</label>
-				<input id="rocket" type="text" placeholder="Enter rocket used during this launch" name="rocket" value="<%= launch.rocket %>">
+				<label>Rocket ID:</label>
+				<input id="rocket_id" type="text" placeholder="Enter id of rocket" name="rocket_id" value="<%= launch.rocket.rocket_id %>">
 			</p>
 			<p>
-				<label>Launch site:</label>
-				<input id="launch_site" type="text" placeholder="Enter launchsite used" name="launch_site" value="<%= launch.launch_site %>">
+				<label>Rocket Name:</label>
+				<input id="rocket_name" type="text" placeholder="Enter rocket used during this launch" name="rocket_name" value="<%= launch.rocket.rocket_name %>">
+			</p>
+			<h2>Launch Site</h2>
+			<p>
+				<label>Site ID:</label>
+				<input id="site_id" type="text" placeholder="Enter id of launch site" name="site_id" value="<%= launch.launch_site.site_id %>">
+			</p>
+			<p>
+				<label>Site Name:</label>
+				<input id="site_name_long" type="text" placeholder="Enter launch site name" name="site_name_long" value="<%= launch.launch_site.site_name_long %>">
 			</p>
 			<p>
 				<label>Date:</label>
