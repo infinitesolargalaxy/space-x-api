@@ -17,15 +17,20 @@
 			</p>
 			<p>
 			    <label>Details:</label>
-				<input id="details" type="text"  placeholder="Enter details of the launchpad" name="details">
+				<input id="details" type="text"  placeholder="Enter details of the launchpad" name="details" value="<%= launchpad.details %>">
 			</p>
 			<p>
 				<label>Status:</label>
-				<input id="status" type="text" placeholder="Enter whether this launchpad is in use" name="status">
+				<input id="status" type="text" placeholder="Enter whether this launchpad is in use" name="status" value="<%= launchpad.status %>">
+			</p>
+			<h2>Location</h2>
+			<p>
+				<label>Location Name:</label>
+				<input id="name" type="text" placeholder="Enter the name of the launch location" name="name" value="<%= launchpad.location.name %>">
 			</p>
 			<p>
-				<label>Location:</label>
-				<input id="location" type="text" placeholder="Enter the location of this launchpad" name="location">
+				<label>Region:</label>
+				<input id="region" type="text" placeholder="Enter the region of the launch" name="region" value="<%= launchpad.location.region %>">
 			</p>
 			<input type="submit" value="Submit" class="btn btn-default">
 		  </form>

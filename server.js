@@ -16,6 +16,7 @@ var db;  // Database
 var collection;  // Collection in database
 
 const OK = 200;  // HTTP status codes
+const INVALID_FORMAT = 400;
 const UNAUTHORIZED = 401;
 const NOT_FOUND = 404;
 const ERROR = 500;
@@ -25,7 +26,7 @@ app.set('view engine', 'ejs');     // res.render('foo') -> /views/foo.ejs
 app.use(express.static('public'))  // /foo -> /public/foo
 app.use(bodyParser.json());        // -d '{"foo": "value"}' -> req.body.foo
 app.use(bodyParser.urlencoded({ extended: true }));  // -d 'foo=value' -> req.body.foo
-app.use(methodOverride("_method"));
+app.use(methodOverride("_method"));  // ?_method=PUT -> PUT and ?_method=DELETE -> DELETE
 app.use(cookieParser());           // -H "Cookie: foo=value" -> req.cookies.foo
 
 app.use((req, res, next) => {      // Authenticator. Adds req.user field if successfully logged in.
@@ -68,11 +69,13 @@ app.use((req, res, next) => {      // Logger
 });
 
 // Helper function for use in ejs files to format output
-app.locals.printProperty = function(elem, key, keyName, pre, suf) {
-  if (elem.hasOwnProperty(key)) {
-      return keyName + ': ' + pre + elem[key] + suf;
+app.locals.printProperty = function(elem, key, pre, suf) {
+  if (elem == null) {
+    return pre + 'N/A' + suf;
+  } else if (elem.hasOwnProperty(key)) {
+      return pre + elem[key] + suf;
   } else {
-    return keyName + ': N/A';
+    return 'N/A';
   }
 };
 
@@ -225,12 +228,17 @@ app.route('/vehicles')
   })
   .post((req,res) =>{
     if (req.user) {
-      addVehicle(req.user, req.body).then(elem => {
-        res.redirect('/vehicles/' + elem.id);
-      }).catch(err => {
-        console.log(err);
-        res.sendStatus(ERROR);
-      })
+      if (isValid(req.body, vehicleKeys.slice(0, 1))) {
+        addVehicle(req.user, req.body).then(elem => {
+          res.redirect('/vehicles/' + elem.id);
+        }).catch(err => {
+          console.log(err);
+          res.sendStatus(ERROR);
+        })
+      } else {
+        res.status(INVALID_FORMAT);
+        res.send("Missing required properties: " + vehicleKeys.slice(0, 1));
+      }
     } else {
       res.sendStatus(UNAUTHORIZED);
     }
@@ -256,12 +264,17 @@ app.route('/vehicles/:id')
   })
   .put((req, res) => {
     if (req.user) {
-      updateVehicle(req.user, req.params.id, req.body).then(elem => {
-        res.redirect('/vehicles/' + req.params.id);
-      }).catch(err => {
-        console.log(err);
-        res.sendStatus(ERROR);
-      })
+      if (isValid(req.body, vehicleKeys.slice(0, 1))) {
+        updateVehicle(req.user, req.params.id, req.body).then(elem => {
+          res.redirect('/vehicles/' + req.params.id);
+        }).catch(err => {
+          console.log(err);
+          res.sendStatus(ERROR);
+        })
+      } else {
+        res.status(INVALID_FORMAT);
+        res.send("Missing required properties: " + vehicleKeys.slice(0, 1));
+      }
     } else {
       res.sendStatus(UNAUTHORIZED);
     }
@@ -299,12 +312,18 @@ app.route('/launches')
   })
   .post((req, res) => {
     if (req.user) {
-      addLaunch(req.user, req.body).then(elem => {
-        res.redirect('/launches/' + elem.flight_number);
-      }).catch(err => {
-        console.log(err);
-        res.sendStatus(ERROR);
-      })
+	   launchesFormHelper(req.body);
+      if (isValid(req.body, launchKeys.slice(0, 4))) {
+        addLaunch(req.user, req.body).then(elem => {
+          res.redirect('/launches/' + elem.flight_number);
+        }).catch(err => {
+          console.log(err);
+          res.sendStatus(ERROR);
+        })
+      } else {
+        res.status(INVALID_FORMAT);
+        res.send("Missing required properties: " + launchKeys.slice(0, 4));
+      }
     } else {
       res.sendStatus(UNAUTHORIZED);
     }
@@ -330,12 +349,18 @@ app.route('/launches/:id')
   })
   .put((req, res) => {
     if (req.user) {
-      updateLaunch(req.user, Number(req.params.id), req.body).then(elem => {
-        res.redirect('/launches/' + req.params.id);
-      }).catch(err => {
-        console.log(err);
-        res.sendStatus(ERROR);
-      })
+	   launchesFormHelper(req.body);
+      if (isValid(req.body, launchKeys.slice(0, 4))) {
+        updateLaunch(req.user, Number(req.params.id), req.body).then(elem => {
+          res.redirect('/launches/' + req.params.id);
+        }).catch(err => {
+          console.log(err);
+          res.sendStatus(ERROR);
+        })
+      } else {
+        res.status(INVALID_FORMAT);
+        res.send("Missing required properties: " + launchKeys.slice(0, 4));
+      }
     } else {
       res.sendStatus(UNAUTHORIZED);
     }
@@ -373,12 +398,18 @@ app.route('/launchpads')
   })
   .post((req, res) => {
     if (req.user) {
-      addLaunchpad(req.user, req.body).then(elem => {
-        res.redirect('/launchpads/' + elem.id);
-      }).catch(err => {
-        console.log(err);
-        res.sendStatus(ERROR);
-      })
+	  launchpadsFormHelper(req.body);
+      if (isValid(req.body, launchpadKeys.slice(0, 1))) {
+        addLaunchpad(req.user, req.body).then(elem => {
+          res.redirect('/launchpads/' + elem.id);
+        }).catch(err => {
+          console.log(err);
+          res.sendStatus(ERROR);
+        })
+      } else {
+        res.status(INVALID_FORMAT);
+        res.send("Missing required properties: " + launchpadKeys.slice(0, 1));
+      }
     } else {
       res.sendStatus(UNAUTHORIZED);
     }
@@ -403,12 +434,18 @@ app.route('/launchpads/:id')
   })
   .put((req, res) => {
     if (req.user) {
-      updateLaunchpad(req.user, req.params.id, req.body).then(elem => {
-        res.redirect('/launchpads/' + req.params.id)
-      }).catch(err => {
-        console.log(err);
-        res.sendStatus(ERROR);
-      })
+      launchpadsFormHelper(req.body);
+      if (isValid(req.body, launchpadKeys.slice(0, 1))) {
+        updateLaunchpad(req.user, req.params.id, req.body).then(elem => {
+          res.redirect('/launchpads/' + req.params.id)
+        }).catch(err => {
+          console.log(err);
+          res.sendStatus(ERROR);
+        })
+      } else {
+        res.status(INVALID_FORMAT);
+        res.send("Missing required properties: " + launchpadKeys.slice(0, 1));
+      }
     } else {
       res.sendStatus(UNAUTHORIZED);
     }
@@ -460,12 +497,17 @@ app.route('/api/vehicles')
   })
   .post((req, res) => {
     if (req.user) {
-      addVehicle(req.user, req.body).then(elem => {
-        res.send(elem);
-      }).catch(err => {
-        console.log(err);
-        res.sendStatus(ERROR);
-      })
+      if (isValid(req.body, vehicleKeys.slice(0, 1))) {
+        addVehicle(req.user, req.body).then(elem => {
+          res.send(elem);
+        }).catch(err => {
+          console.log(err);
+          res.sendStatus(ERROR);
+        })
+      } else {
+        res.status(INVALID_FORMAT);
+        res.send("Missing required properties: " + vehicleKeys.slice(0, 1));
+      }
     } else {
       res.sendStatus(UNAUTHORIZED);
     }
@@ -493,12 +535,17 @@ app.route('/api/vehicles/:id')
   })
   .put((req, res) => {
     if (req.user) {
-      updateVehicle(req.user, req.params.id, req.body).then(elem => {
-        res.send(elem);
-      }).catch(err => {
-        console.log(err);
-        res.sendStatus(ERROR);
-      })
+      if (isValid(req.body, vehicleKeys.slice(0, 1))) {
+        updateVehicle(req.user, req.params.id, req.body).then(elem => {
+          res.send(elem);
+        }).catch(err => {
+          console.log(err);
+          res.sendStatus(ERROR);
+        })
+      } else {
+        res.status(INVALID_FORMAT);
+        res.send("Missing required properties: " + vehicleKeys.slice(0, 1));
+      }
     } else {
       res.sendStatus(UNAUTHORIZED);
     }
@@ -539,12 +586,17 @@ app.route('/api/launches')
   })
   .post((req, res) => {
     if (req.user) {
-      addLaunch(req.user, req.body).then(elem => {
-        res.send(elem);
-      }).catch(err => {
-        console.log(err);
-        res.sendStatus(ERROR);
-      })
+      if (isValid(req.body, launchKeys.slice(0, 4))) {
+        addLaunch(req.user, req.body).then(elem => {
+          res.send(elem);
+        }).catch(err => {
+          console.log(err);
+          res.sendStatus(ERROR);
+        })
+      } else {
+        res.status(INVALID_FORMAT);
+        res.send("Missing required properties: " + launchKeys.slice(0, 4));
+      }
     } else {
       res.sendStatus(UNAUTHORIZED);
     }
@@ -574,12 +626,17 @@ app.route('/api/launches/:id')
   .put((req, res) => {
 	console.log(req.body);
     if (req.user) {
-      updateLaunch(req.user, Number(req.params.id), req.body).then(elem => {
-        res.send(elem);
-      }).catch(err => {
-        console.log(err);
-        res.sendStatus(ERROR);
-      })
+      if (isValid(req.body, launchKeys.slice(0, 4))) {
+        updateLaunch(req.user, Number(req.params.id), req.body).then(elem => {
+          res.send(elem);
+        }).catch(err => {
+          console.log(err);
+          res.sendStatus(ERROR);
+        })
+      } else {
+        res.status(INVALID_FORMAT);
+        res.send("Missing required properties: " + launchKeys.slice(0, 4));
+      }
     } else {
       res.sendStatus(UNAUTHORIZED);
     }
@@ -618,12 +675,17 @@ app.route('/api/launchpads')
   })
   .post((req, res) => {
     if (req.user) {
-      addLaunchpad(req.user, req.body).then(data => {
-        res.send(data);
-      }).catch(err => {
-        console.log(err);
-        res.sendStatus(ERROR);
-      })
+      if (isValid(req.body, launchpadKeys.slice(0, 1))) {
+        addLaunchpad(req.user, req.body).then(data => {
+          res.send(data);
+        }).catch(err => {
+          console.log(err);
+          res.sendStatus(ERROR);
+        })
+      } else {
+        res.status(INVALID_FORMAT);
+        res.send("Missing required properties: " + launchpadKeys.slice(0, 1));
+      }
     } else {
       res.sendStatus(UNAUTHORIZED);
     }
@@ -651,12 +713,17 @@ app.route('/api/launchpads/:id')
   })
   .put((req, res) => {
     if (req.user) {
-      updateLaunchpad(req.user, req.params.id, req.body).then(elem => {
-        res.send(elem);
-      }).catch(err => {
-        console.log(err);
-        res.sendStatus(ERROR);
-      })
+      if (isValid(req.body, launchpadKeys.slice(0, 1))) {
+        updateLaunchpad(req.user, req.params.id, req.body).then(elem => {
+          res.send(elem);
+        }).catch(err => {
+          console.log(err);
+          res.sendStatus(ERROR);
+        })
+      } else {
+        res.status(INVALID_FORMAT);
+        res.send("Missing required properties: " + launchpadKeys.slice(0, 1));
+      }
     } else {
       res.sendStatus(UNAUTHORIZED);
     }
@@ -794,6 +861,65 @@ function addUser(user, password) {
   });
 }
 
+// The keys used for each element
+const vehicleKeys = ['name', 'id', 'description', 'active', 'first_flight', 'cost_per_launch', 'success_rate_pct'];
+const launchKeys = ['rocket.rocket_id', 'rocket.rocket_name', 'launch_site.site_id', 'launch_site.site_name_long', 'flight_number', 'details', 'rocket', 'launch_site', 'launch_date_local', 'launch_success'];
+const launchpadKeys = ['full_name', 'id', 'details', 'status', 'location'];
+
+// Helper function to validate input
+function isValid(elem, keys) {
+  for (var key of keys) {
+    var key1 = key.split('.')[0];
+    var key2 = key.split('.')[1];
+    if (!elem.hasOwnProperty(key1)) {
+      return false;
+    }
+    if (key2 && !elem[key1].hasOwnProperty(key2)) {
+      return false;
+    }
+  }
+  return true;
+}
+
+// Helper function to remove extra keys from data
+function removeKeys(data, keysToKeep) {
+  if (data instanceof Array) {
+    data.forEach(elem => {
+      Object.keys(elem).forEach(key => {
+        if (!keysToKeep.includes(key)) {
+          delete elem[key];
+        }
+      });
+    });
+  } else {
+    Object.keys(data).forEach(key => {
+      if (!keysToKeep.includes(key)) {
+        delete data[key];
+      }
+    });
+  }
+}
+
+/*Helper functions to format data properly from browser form
+ Input is req.body
+*/
+function launchesFormHelper(data) {
+	if (!data.hasOwnProperty('rocket') && data.hasOwnProperty('rocket_id') && data.hasOwnProperty('rocket_name')) {
+		data['rocket'] = {rocket_id: data['rocket_id'], rocket_name: data['rocket_name']};
+	}
+	if (!data.hasOwnProperty('launch_site') && data.hasOwnProperty('site_id') && data.hasOwnProperty('site_name_long')) {
+		data['launch_site'] = {site_id: data['site_id'], site_name_long:data['site_name_long']};
+	}
+	console.log(data);
+}
+
+function launchpadsFormHelper(data) {
+	if (!data.hasOwnProperty('location') && data.hasOwnProperty('name') && data.hasOwnProperty('region')) {
+		data['location'] = {name: data['name'], region: data['region']};
+	}
+	console.log(data);
+}
+
 // ========== Get data from Space-X API or database ==========
 function getVehicles(user, id) {
   if (user) {  // Logged in
@@ -818,7 +944,6 @@ function getVehicles(user, id) {
         } else {
           if (res.statusCode === 200) {
             var data = JSON.parse(body);
-            var vehicleKeys = ['id', 'name', 'description', 'active', 'first_flight', 'cost_per_launch', 'success_rate_pct'];
             removeKeys(data, vehicleKeys);
             resolve(data);
           } else {
@@ -860,7 +985,6 @@ function getLaunches(user, id, vehicle_id, launchpad_id) {
           reject(err);
         } else {
           var data = JSON.parse(body);
-          var launchKeys = ['flight_number', 'details', 'rocket', 'launch_site', 'launch_date_local', 'launch_success'];
           removeKeys(data, launchKeys);
           if (id) {
             resolve(data.find(elem => elem.flight_number === id));
@@ -896,7 +1020,6 @@ function getLaunchpads(user, id) {
         } else {
           if (res.statusCode === 200) {
             var data = JSON.parse(body);
-            var launchpadKeys = ['id', 'full_name', 'details', 'status', 'location'];
             removeKeys(data, launchpadKeys);
             resolve(data);
           } else {
@@ -904,25 +1027,6 @@ function getLaunchpads(user, id) {
           }
         }
       });
-    });
-  }
-}
-
-// Helper function to remove extra keys from data
-function removeKeys(data, keysToKeep) {
-  if (data instanceof Array) {
-    data.forEach(elem => {
-      Object.keys(elem).forEach(key => {
-        if (!keysToKeep.includes(key)) {
-          delete elem[key];
-        }
-      });
-    });
-  } else {
-    Object.keys(data).forEach(key => {
-      if (!keysToKeep.includes(key)) {
-        delete data[key];
-      }
     });
   }
 }
