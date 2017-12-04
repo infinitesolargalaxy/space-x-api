@@ -7,25 +7,10 @@
     <!-- Tab views -->
     <div class="tab-view">
       <div id="launches">
-		<% if (isLoggedIn) { %>
-			<td>
-				<a href="/launches/edit/" class="button">Add New Launch</a>
-			</td>
-		<% } %>
         <h2><%= title %></h2>
         <ul class="results">
           <% data.forEach((elem, i) => { %>
             <li id=<%= elem.flight_number %> class="result">
-			<% if (isLoggedIn) { %>
-              <td>
-                <a href="/launches/edit/<%= elem.flight_number %>" class="button">Edit</a>
-              </td>
-              <td>
-                <form action="/launches/<%= elem.flight_number %>?_method=DELETE" method="POST">
-                <button class="btn btn-default">Delete</button>
-              </form>
-             </td>
-			 <% } %>
               <h3>Launch #<%= elem.flight_number %></h3>
               <p><%= elem.details %></p>
               <ul>
@@ -34,11 +19,21 @@
                 <li>Date: <%= new Date(elem.launch_date_local).toDateString().slice(4) %></li>
                 <li>Success: <%= printProperty(elem, 'launch_success', '', '') %></li>
               </ul>
+              <% if (isLoggedIn) { %>
+                <form action=<%= "/launches/" + elem.id + "?_method=DELETE" %> method="POST">
+                  <a href=<%= "/launches/" + elem.id + "/edit" %> class="btn"><i class="material-icons">edit</i></a>
+                  <button class="btn"><i class="material-icons">delete</i></button>
+                </form>
+              <% } %>
             </li>
           <% }); %>
         </ul>
       </div>
     </div>
+    <% if (isLoggedIn) { %>
+      <a href="/launches/create" class="btn btn-float"><i class="material-icons">add</i></a>
+    <% } %>
+
     <% include ../footer %>
     <% include ../script %>
   </body>

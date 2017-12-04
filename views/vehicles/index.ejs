@@ -7,28 +7,10 @@
     <!-- Tab views -->
     <div class="tab-view">
       <div id="vehicles">
-	    <% if (isLoggedIn) { %>
-			<td>
-				<a href="/vehicles/edit" class="button">Add New Vehicle</a>
-			</td>
-		<% } %>
         <h2><%= title %></h2>
         <ul class="results">
           <% data.forEach((elem, i) => { %>
             <li id=<%= elem.id %> class="result">
-			<!-- Only let logged in users edit and delete -->
-			<% if (isLoggedIn) { %>
-			  <td>
-				<a href="/vehicles/edit/<%= elem.id %>" class="button">Edit</a>
-			  </td>
-			  <td>
-                <form action="/vehicles/<%= elem.id %>?_method=DELETE" method="POST">
-                  <button class="btn btn-default">Delete</button>
-                </form>
-			  </td>
-			<% } %>
-			
-			
               <h3><%= elem.name %></h3>
               <p><%= elem.description %></p>
               <ul>
@@ -38,11 +20,20 @@
                 <li>Success Rate: <%= printProperty(elem, 'success_rate_pct', '', '%') %></li>
               </ul>
               <p><a href=<%= "/launches?vehicle=" + elem.id %>>Launches</a></p>
+              <% if (isLoggedIn) { %>
+                <form action=<%= "/vehicles/" + elem.id + "?_method=DELETE" %> method="POST">
+                  <a href=<%= "/vehicles/" + elem.id + "/edit" %> class="btn"><i class="material-icons">edit</i></a>
+                  <button class="btn"><i class="material-icons">delete</i></button>
+                </form>
+              <% } %>
             </li>
           <% }); %>
         </ul>
       </div>
     </div>
+    <% if (isLoggedIn) { %>
+      <a href="/vehicles/create" class="btn btn-float"><i class="material-icons">add</i></a>
+    <% } %>
     <% include ../footer %>
     <% include ../script %>
   </body>

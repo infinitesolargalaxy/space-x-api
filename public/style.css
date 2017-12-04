@@ -108,6 +108,8 @@ li {
 
 /* Results */
 .tab-view .result {
+  display: flex;
+  flex-direction: column;
   padding: 15px;
   margin-bottom: 15px;
   background-color: #fff;
@@ -132,7 +134,12 @@ li {
   margin-bottom: 0;
 }
 
-/* Forms */
+/* Forms and Buttons */
+form {
+  margin-top: auto;
+  text-align: center;
+}
+
 form label {
   display: inline-block;
   width: 25%;
@@ -146,13 +153,33 @@ form input {
   line-height: 1.5;
 }
 
-form button {
-  display: block;
-  margin: 0 auto;
-  width: 85%;
+.btn {
+  display: inline-block;
+  width: 48%;
   margin-top: 15px;
-  padding: 5px;
+  padding: 10px 15px;
+  background-color: #000;
+  border: none;
+  color: #fff !important;
   font-size: 16px;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background-color: #333;
+}
+
+.btn-float {
+  position: fixed;
+  right: 50px;
+  bottom: 65px;
+  width: auto;
+  padding: 15px;
+  border-radius: 50%;
+}
+
+.btn-float .material-icons {
+  font-size: 48px;
 }
 
 /* Footer */
