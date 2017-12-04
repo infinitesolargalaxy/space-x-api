@@ -1,15 +1,20 @@
 Team Members (name and utorid):
-Adam Fong (fongadam)
-Andrew So (soandre2)
-Yunsung Oh (ohyunsun)
-Michael Ly (lymicha6)
+ - Adam Fong (fongadam)
+ - Andrew So (soandre2)
+ - Yunsung Oh (ohyunsun)
+ - Michael Ly (lymicha6)
+
+The primary feature of our web application is to view SpaceX’s updated list of spacecraft or history of launches in an easy to use manner. The intention is to serve as a SpaceX fan site.
 
 Our web application consists of five views: 
+
  1: A home landing page
- 2-4: Three views which displays a list of vehicles, launches, or launchpads as cards. The list is a query from SpaceX's API if the user is not logged in. If they are logged in, the list is their personal copy in which they are free to modify as they please.
- 5: A login page for existing users to sign in with or new users to make an account with.
-The primary feature of our web application is to view SpaceX’s updated list of spacecraft or history of launches in an easy to use manner. The intention is to serve as a SpaceX fan site.
-In addition, each result card is linked to other related cards to allow the user to see the relationship between spacecraft, launches, and where they launched from.
+ 
+ 2-4: Three views which displays a list of vehicles, launches, or launchpads as cards. The list is drawn from SpaceX's API and is the default that is shown if the user is not logged in. If they are logged in, the list shown is their own personal copy of the data and they are free to modify it as they please.
+ 
+ 5: A login/signup page for existing users to log in or for new users to make an account with.
+
+Users switch between these views using the tabs along the top. They can also navigate between views using the links in the cards which allows the user to see the relationship between vehicles, launches, and launchpads.
 Specifically: 
  * A vehicle card is linked to its launches. 
  * A launch card is linked to its launched vehicle and which launchpad was used. 
