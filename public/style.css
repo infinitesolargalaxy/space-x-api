@@ -145,12 +145,17 @@ form label {
   width: 25%;
   margin: 15px 10px;
   text-align: right;
+
 }
 
-form input {
+form input,
+form textarea {
   width: 60%;
   padding: 5px;
   line-height: 1.5;
+  vertical-align: middle;
+  font-family: sans-serif;
+  resize: none;
 }
 
 .btn {

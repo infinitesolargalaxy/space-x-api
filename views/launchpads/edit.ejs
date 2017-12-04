@@ -7,33 +7,26 @@
     <!-- Tab views -->
     <div class="tab-view">
       <div id="launchpads">
-		<h2>Edit a launch pad</h2>
+		<h2><%= title %></h2>
 		<ul class="results">
 		<li id=edit class="result">
 		<!-- 'id', 'full_name', 'details', 'status', 'location' -->
 		  <form class="form" action="/launchpads/<%= launchpad.id %>?_method=<%= method %>" method="post">   
-			<p>
-				<label>Name:</label>
-				<input id="full_name" type="text" placeholder="Enter launchpad name" name="full_name" value="<%= launchpad.full_name %>">
-			</p>
-			<p>
-			    <label>Details:</label>
-				<input id="details" type="text"  placeholder="Enter details of the launchpad" name="details" value="<%= launchpad.details %>">
-			</p>
-			<p>
-				<label>Status:</label>
+				<label for="full_name">Name</label>
+				<input id="full_name" type="text" placeholder="Enter launchpad name" name="full_name" value="<%= launchpad.full_name %>" required>
+
+				<label for="status">Status</label>
 				<input id="status" type="text" placeholder="Enter whether this launchpad is in use" name="status" value="<%= launchpad.status %>">
-			</p>
-			<h2>Location</h2>
-			<p>
-				<label>Location Name:</label>
+
+				<label for="name">Location Name</label>
 				<input id="name" type="text" placeholder="Enter the name of the launch location" name="name" value="<%= launchpad.location.name %>">
-			</p>
-			<p>
-				<label>Region:</label>
+
+				<label for="region">Location Region</label>
 				<input id="region" type="text" placeholder="Enter the region of the launch" name="region" value="<%= launchpad.location.region %>">
-			</p>
-			<input type="submit" value="Submit" class="btn btn-default">
+
+        <label for="details">Details</label>
+        <textarea id="details" placeholder="Enter details of the launchpad" name="details" rows="8"><%= launchpad.details %></textarea>
+			<button type="submit" class="btn">Submit</button>
 		  </form>
 		 </li>
 		</ul>

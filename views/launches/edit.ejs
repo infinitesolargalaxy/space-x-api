@@ -7,42 +7,32 @@
     <!-- Tab views -->
     <div class="tab-view">
       <div id="launches">
-		<h2>Edit a launch</h2>
+		<h2><%= title %></h2>
 		<ul class="results">
 		<li id=edit class="result">
 		<!-- 'flight_number', 'details', 'rocket', 'launch_site', 'launch_date_local', 'launch_success' -->
 		  <form class="form" action="/launches/<%= launch.flight_number %>?_method=<%= method %>" method="post">   
-			<p>
-			    <label>Details:</label>
-				<input id="details" type="text" placeholder="Enter details" name="details" value="<%= launch.details %>">
-			</p>
-			<h2>Vehicle</h2>
-			<p>
-				<label>Rocket ID:</label>
-				<input id="rocket_id" type="text" placeholder="Enter id of rocket" name="rocket_id" value="<%= launch.rocket.rocket_id %>">
-			</p>
-			<p>
-				<label>Rocket Name:</label>
-				<input id="rocket_namesss" type="text" placeholder="Enter rocket used during this launch" name="rocket_name" value="<%= launch.rocket.rocket_name %>">
-			</p>
-			<h2>Launch Site</h2>
-			<p>
-				<label>Site ID:</label>
-				<input id="site_id" type="text" placeholder="Enter id of launch site" name="site_id" value="<%= launch.launch_site.site_id %>">
-			</p>
-			<p>
-				<label>Site Name:</label>
-				<input id="site_name_long" type="text" placeholder="Enter launch site name" name="site_name_long" value="<%= launch.launch_site.site_name_long %>">
-			</p>
-			<p>
-				<label>Date:</label>
+				<label for="rocket_id">Vehicle ID</label>
+				<input id="rocket_id" type="text" placeholder="Enter id of vehicle" name="rocket_id" value="<%= launch.rocket.rocket_id %>" required>
+
+				<label for="rocket_name">Vehicle Name</label>
+				<input id="rocket_name" type="text" placeholder="Enter vehicle used during this launch" name="rocket_name" value="<%= launch.rocket.rocket_name %>" required>
+
+				<label for="site_id">Launchpad ID</label>
+				<input id="site_id" type="text" placeholder="Enter id of launchpad" name="site_id" value="<%= launch.launch_site.site_id %>" required>
+
+				<label for="site_name_long">Launchpad Name</label>
+				<input id="site_name_long" type="text" placeholder="Enter launchpad name" name="site_name_long" value="<%= launch.launch_site.site_name_long %>" required>
+
+				<label for="launch_date_local">Date</label>
 				<input id="launch_date_local" type="text" placeholder="YYYY-MM-DD" name="launch_date_local" value="<%= launch.launch_date_local %>">
-			</p>
-			<p>
-				<label>Success:</label>
+
+				<label for="launch_success">Success</label>
 				<input id="launch_success" type="text" placeholder="True/False" name="launch_success" value="<%= launch.launch_success %>">
-			</p>
-			<input type="submit" value="Submit" class="btn btn-default">
+        
+        <label for="details">Details</label>
+        <textarea id="details" placeholder="Enter details" name="details" rows="8"><%= launch.details %></textarea>
+			<button type="submit" class="btn">Submit</button>
 		  </form>
 		  </li>
 		</ul>

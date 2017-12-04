@@ -63,7 +63,6 @@ $.ajax({
 
       }).catch(err => {
         console.log(err)
-        alert('Failed to retrieve message.')
   })
 
 // Repeated Ajax call for newly posted messages 
@@ -98,7 +97,6 @@ function refreshMessages(){
 
       }).catch(err => {
         console.log(err)
-        alert('Failed to retrieve message.')
     })
 }
 

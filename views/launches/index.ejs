@@ -16,7 +16,7 @@
               <ul>
                 <li>Vehicle: <a href=<%= "/vehicles/" + elem.rocket.rocket_id %>><%= elem.rocket.rocket_name %></a></li>
                 <li>Launchpad: <a href=<%= "/launchpads/" + elem.launch_site.site_id %>><%= elem.launch_site.site_name_long %></a></li>
-                <li>Date: <%= new Date(elem.launch_date_local).toDateString().slice(4) %></li>
+                <li>Date: <%= new Date(elem.launch_date_local).toDateString() %></li>
                 <li>Success: <%= printProperty(elem, 'launch_success', '', '') %></li>
               </ul>
               <% if (isLoggedIn) { %>

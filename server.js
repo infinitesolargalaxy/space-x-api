@@ -72,10 +72,10 @@ app.use((req, res, next) => {      // Logger
 app.locals.printProperty = function(elem, key, pre, suf) {
   if (elem == null) {
     return pre + 'N/A' + suf;
-  } else if (elem.hasOwnProperty(key)) {
+  } else if (elem.hasOwnProperty(key) && elem[key] != '') {
       return pre + elem[key] + suf;
   } else {
-    return 'N/A';
+    return 'N/A' + suf;
   }
 };
 
@@ -132,10 +132,9 @@ app.get('/logout', (req, res) => {
 
 // Browser editing form for vehicle creation
 app.get("/vehicles/create", (req, res) => {
-  //Make an empty copy
-  elem = {id: "", name: "", cost_per_launch: "", success_rate_pct: "", first_flight: "", active: "", description: ""};
   res.render('vehicles/edit', {
-    vehicle: elem,
+    title: "Add a vehicle",
+    vehicle: {},
     method: "post",
     isLoggedIn: req.user
   })
@@ -145,10 +144,11 @@ app.get("/vehicles/create", (req, res) => {
 app.get("/vehicles/:id/edit", (req, res) => {
   getVehicles(req.user, req.params.id).then(elem => {
     if (elem) {
-     res.render('vehicles/edit', {
-       vehicle: elem,
-       method: "put",
-       isLoggedIn: req.user
+      res.render('vehicles/edit', {
+        title: "Edit vehicle " + req.params.id,
+        vehicle: elem,
+        method: "put",
+        isLoggedIn: req.user
      })
    } else {
     res.sendStatus(NOT_FOUND);
@@ -164,6 +164,7 @@ app.get("/launches/create", (req, res) => {
   //Make an empty copy
   elem = {flight_number: "", details: "", rocket: "", launch_site: "", launch_date_local: "", launch_success: ""};
   res.render('launches/edit', {
+    title: "Add a launch",
     launch: elem,
     method: "post",
     isLoggedIn: req.user
@@ -175,6 +176,7 @@ app.get("/launches/:id/edit", (req, res) => {
   getLaunches(req.user, Number(req.params.id)).then(elem => {
     if (elem) {
       res.render('launches/edit', {
+        title: "Edit launch #" + req.params.id,
         launch: elem,
         method: "put",
         isLoggedIn: req.user
@@ -193,6 +195,7 @@ app.get("/launchpads/create", (req, res) => {
   //Make an empty copy
   elem = {id: "", full_name: "", details: "", status: "", location: ""};
   res.render('launchpads/edit', {
+    title: "Add a launchpad",
     launchpad: elem,
     method: "post",
     isLoggedIn: req.user
@@ -204,6 +207,7 @@ app.get("/launchpads/:id/edit", (req, res) => {
   getLaunchpads(req.user, req.params.id).then(elem => {
     if (elem) {
       res.render('launchpads/edit', {
+        title: "Edit launchpad " + req.params.id,
         launchpad: elem,
         method: "put",
         isLoggedIn: req.user
