@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <% include ../head %>
+  <body>
+    <% var active = "launchpads"; %>
+    <% include ../nav %>
+    <!-- Tab views -->
+    <div class="tab-view">
+      <div id="launchpads">
+		<h2>Edit a launch pad</h2>
+		<ul class="results">
+		<!-- 'id', 'full_name', 'details', 'status', 'location' -->
+		  <form class="form" action="/launchpads/<%= launchpad.id %>?_method=PUT" method="post">   
+			<p>
+				<label>Name:</label>
+				<input id="full_name" type="text" name="full_name">
+			</p>
+			<p>
+			    <label>Details:</label>
+				<input id="details" type="text" name="details">
+			</p>
+			<p>
+				<label>Status:</label>
+				<input id="status" type="text" name="status">
+			</p>
+			<p>
+				<label>Location:</label>
+				<input id="location" type="text" name="location">
+			</p>
+			<input type="submit" value="Submit" class="btn btn-default">
+		  </form>
+		</ul>
+      </div>
+    </div>
+    <% include ../footer %>
+    <% include ../script %>
+  </body>
+</html>
