@@ -9,6 +9,7 @@
       <div id="launchpads">
 		<h2>Edit a launch pad</h2>
 		<ul class="results">
+		<li id=edit class="result">
 		<!-- 'id', 'full_name', 'details', 'status', 'location' -->
 		  <form class="form" action="/launchpads/<%= launchpad.id %>?_method=<%= method %>" method="post">   
 			<p>
@@ -34,6 +35,7 @@
 			</p>
 			<input type="submit" value="Submit" class="btn btn-default">
 		  </form>
+		 </li>
 		</ul>
       </div>
     </div>

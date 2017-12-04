@@ -108,7 +108,8 @@ app.route('/login')
     });
   })
 
- app.get("/vehicles/edit/:id", (req, res) => {
+//Browser editing form for vehicles
+app.get("/vehicles/edit/:id", (req, res) => {
   getVehicles(req.user, req.params.id).then(elem => {
       if (elem) {
 		res.render('vehicles/edit', {
@@ -135,6 +136,7 @@ app.get("/vehicles/edit/", (req, res) => {
 	})
 });
 
+//Browser editing form for launches
 app.get("/launches/edit/:id", (req, res) => {
   getLaunches(req.user, Number(req.params.id)).then(elem => {
       if (elem) {
@@ -162,6 +164,7 @@ app.get("/launches/edit/", (req, res) => {
   })
 });
 
+//Browser editing form for launchpads
 app.get("/launchpads/edit/:id", (req, res) => {
   getLaunchpads(req.user, req.params.id).then(elem => {
       if (elem) {
@@ -1251,6 +1254,7 @@ function updateHelper(data, id, attr, newdata, enforceAttributes) {
 function updateVehicle(user, id, elem) {
   return getVehicles(user).then(data => {
     elem.id = id;
+	//Finds item by mapping
     var index = data.map(elem => elem.id).indexOf(id);
     if (index === -1) {
       data.push(elem);
@@ -1267,6 +1271,7 @@ function updateVehicle(user, id, elem) {
 function updateLaunch(user, id, elem) {
   return getLaunches(user).then(data => {
     elem.flight_number = id;
+	//Finds item by mapping
     var index = data.map(elem => elem.flight_number).indexOf(id);
     if (index === -1) {
       data.push(elem);
@@ -1283,6 +1288,7 @@ function updateLaunch(user, id, elem) {
 function updateLaunchpad(user, id, elem) {
   return getLaunchpads(user).then(data => {
     elem.id = id;
+	//Finds item by mapping
     var index = data.map(elem => elem.id).indexOf(id);
     if (index === -1) {
       data.push(elem);
@@ -1381,6 +1387,7 @@ function addMessage(elem) {
     if (data.length == 0) {
       var id = 0;
     } else {
+	  //Calculate a new unique id
       var id = Math.max.apply(Math, data.map(elem => elem.id)) + 1;
     }
     elem.id = id;

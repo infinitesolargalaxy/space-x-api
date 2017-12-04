@@ -9,6 +9,7 @@
       <div id="launches">
 		<h2>Edit a launch</h2>
 		<ul class="results">
+		<li id=edit class="result">
 		<!-- 'flight_number', 'details', 'rocket', 'launch_site', 'launch_date_local', 'launch_success' -->
 		  <form class="form" action="/launches/<%= launch.flight_number %>?_method=<%= method %>" method="post">   
 			<p>
@@ -43,6 +44,7 @@
 			</p>
 			<input type="submit" value="Submit" class="btn btn-default">
 		  </form>
+		  </li>
 		</ul>
       </div>
     </div>
