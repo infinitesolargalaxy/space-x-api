@@ -22,8 +22,8 @@
               <h3><%= elem.full_name %></h3>
               <p><%= elem.details %></p>
               <ul>
-                <li><%= printProperty(elem, 'status', 'Status', '', '') %></li>
-                <li><%= printProperty(elem.location, 'name', 'Location', '', ', ' + elem.location.region) %></li>
+                <li>Status: <%= printProperty(elem, 'status', '', '') %></li>
+                <li>Location: <%= printProperty(elem.location, 'name', '', ', ') + printProperty(elem.location, 'region', '', '') %></li>
               </ul>
               <p><a href=<%= "/launches?launchpad=" + elem.id %>>Launches</a></p>
             </li>

@@ -25,10 +25,10 @@
               <h3><%= elem.name %></h3>
               <p><%= elem.description %></p>
               <ul>
-                <li><%= printProperty(elem, 'active', 'Active', '', '') %></li>
-                <li><%= printProperty(elem, 'first_flight', 'First Flight', '', '') %></li>
-                <li><%= printProperty(elem, 'cost_per_launch', 'Cost Per Launch', '$', '') %></li>
-                <li><%= printProperty(elem, 'success_rate_pct', 'Success Rate', '', '%') %></li>
+                <li>Active: <%= printProperty(elem, 'active', '', '') %></li>
+                <li>First Flight: <%= printProperty(elem, 'first_flight', '', '') %></li>
+                <li>Cost Per Launch: <%= printProperty(elem, 'cost_per_launch', '$', '') %></li>
+                <li>Success Rate: <%= printProperty(elem, 'success_rate_pct', '', '%') %></li>
               </ul>
               <p><a href=<%= "/launches?vehicle=" + elem.id %>>Launches</a></p>
             </li>
