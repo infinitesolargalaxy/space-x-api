@@ -105,12 +105,29 @@ app.route('/login')
     });
   })
 
-  /*
  app.get("/vehicles/:id/edit", (req, res) => {
+/*
   res.render("vehicles/edit", {
-    course: db.findOne(req.params.id)
-  });
-});*/
+    vehicle: db.findOne(req.params.id)
+  });*/
+  getVehicles(req.user, req.params.id).then(elem => {
+      if (elem) {
+		res.render('vehicles/edit', {
+		vehicle: elem,
+		isLoggedIn: req.user
+		})
+      } else {
+        res.sendStatus(NOT_FOUND);
+      }
+    }).catch(err => {
+      console.log(err);
+      res.sendStatus(ERROR);
+    })
+  /*res.render('vehicles/edit', {
+      vehicle: 
+      isLoggedIn: req.user
+    })*/
+});
   
 // Signup request
 app.route('/signup')

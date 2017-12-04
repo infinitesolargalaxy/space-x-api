@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <% include ../head %>
+  <body>
+    <% var active = "vehicles"; %>
+    <% include ../nav %>
+    <!-- Tab views -->
+    <div class="tab-view">
+      <div id="vehicles">
+		<h2>Edit a vehicle</h2>
+		<ul class="results">
+		<!-- "id", "name", "cost_per_launch","success_rate_pct","first_flight", "active", "description" -->
+		  <form class="form" action="/vehicles/<%= vehicle.id %>?_method=PUT" method="post">   
+			<p>
+				<label>Name:</label>
+				<input id="name" type="text" name="name">
+			</p>
+			<p>
+			    <label>Cost per launch:</label>
+				<input id="cost_per_launch" type="text" name="cost_per_launch">
+			</p>
+			<p>
+				<label>Success rate:</label>
+				<input id="success_rate_pct" type="text" name="success_rate_pct">
+			</p>
+			<p>
+				<label>First Flight:</label>
+				<input id="first_flight" type="text" name="first_flight">
+			</p>
+			<p>
+				<label>Active:</label>
+				<input id="active" type="text" name="active">
+			</p>
+			<p>
+				<label>Description:</label>
+				<input id="description" type="text" name="description">
+			</p>
+			<input type="submit" value="Submit" class="btn btn-default">
+		  </form>
+		</ul>
+      </div>
+    </div>
+    <% include ../footer %>
+    <% include ../script %>
+  </body>
+</html>
