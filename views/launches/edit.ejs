@@ -10,11 +10,7 @@
 		<h2>Edit a launch</h2>
 		<ul class="results">
 		<!-- 'flight_number', 'details', 'rocket', 'launch_site', 'launch_date_local', 'launch_success' -->
-		  <form class="form" action="/launches/<%= launch.flight_number %>?_method=PUT" method="post">   
-		<!--<p>
-				<label>Flight number:</label>
-				<input id="flight_number" type="text" name="flight_number">
-			</p> -->
+		  <form class="form" action="/launches/<%= launch.flight_number %>?_method=<%= method %>" method="post">   
 			<p>
 			    <label>Details:</label>
 				<input id="details" type="text" name="details">

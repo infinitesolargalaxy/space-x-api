@@ -12,10 +12,10 @@
           <% data.forEach((elem, i) => { %>
             <li id=<%= elem.flight_number %> class="result">
               <td>
-              <a href="/launches/<%= elem.id %>/edit" class="btn btn-default">Edit</a>
+                <a href="/launches/edit/<%= elem.flight_number %>" class="btn btn-default">Edit</a>
               </td>
               <td>
-              <form action="/launches/<%= elem.id %>?_method=DELETE" method="POST">
+                <form action="/launches/<%= elem.flight_number %>?_method=DELETE" method="POST">
                 <button class="btn btn-default">Delete !</button>
               </form>
              </td>

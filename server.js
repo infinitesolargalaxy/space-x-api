@@ -131,7 +131,27 @@ app.get("/vehicles/edit/", (req, res) => {
 		isLoggedIn: req.user
 	})
 });
-  
+
+app.get("/launches/edit/", (req, res) => {
+  //Make an empty copy
+  elem = {flight_number: "", details: "", rocket: "", launch_site: "", launch_date_local: "", launch_success: ""};
+  res.render('launches/edit', {
+    launch: elem,
+    method: "post",
+    isLoggedIn: req.user
+  })
+});
+
+app.get("/launchpads/edit/", (req, res) => {
+  //Make an empty copy
+  elem = {id: "", full_name: "", details: "", status: "", location: ""};
+  res.render('launchpads/edit', {
+    launchpad: elem,
+    method: "post",
+    isLoggedIn: req.user
+  })
+});
+
 // Signup request
 app.route('/signup')
  .post((req, res) => {
