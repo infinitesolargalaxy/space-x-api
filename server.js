@@ -108,91 +108,6 @@ app.route('/login')
     });
   })
 
-//Browser editing form for vehicles
-app.get("/vehicles/edit/:id", (req, res) => {
-  getVehicles(req.user, req.params.id).then(elem => {
-      if (elem) {
-		res.render('vehicles/edit', {
-		vehicle: elem,
-		method: "put",
-		isLoggedIn: req.user
-		})
-      } else {
-        res.sendStatus(NOT_FOUND);
-      }
-    }).catch(err => {
-      console.log(err);
-      res.sendStatus(ERROR);
-    })
-});
-
-app.get("/vehicles/edit/", (req, res) => {
-	//Make an empty copy
-	elem = {id: "", name: "", cost_per_launch: "", success_rate_pct: "", first_flight: "", active: "", description: ""};
-	res.render('vehicles/edit', {
-		vehicle: elem,
-		method: "post",
-		isLoggedIn: req.user
-	})
-});
-
-//Browser editing form for launches
-app.get("/launches/edit/:id", (req, res) => {
-  getLaunches(req.user, Number(req.params.id)).then(elem => {
-      if (elem) {
-		res.render('launches/edit', {
-		launch: elem,
-		method: "put",
-		isLoggedIn: req.user
-		})
-      } else {
-        res.sendStatus(NOT_FOUND);
-      }
-    }).catch(err => {
-      console.log(err);
-      res.sendStatus(ERROR);
-    })
-});
-
-app.get("/launches/edit/", (req, res) => {
-  //Make an empty copy
-  elem = {flight_number: "", details: "", rocket: "", launch_site: "", launch_date_local: "", launch_success: ""};
-  res.render('launches/edit', {
-    launch: elem,
-    method: "post",
-    isLoggedIn: req.user
-  })
-});
-
-//Browser editing form for launchpads
-app.get("/launchpads/edit/:id", (req, res) => {
-  getLaunchpads(req.user, req.params.id).then(elem => {
-      if (elem) {
-		res.render('launchpads/edit', {
-		launchpad: elem,
-		method: "put",
-		isLoggedIn: req.user
-		})
-      } else {
-		console.log("%s!", req.params.id)
-        res.sendStatus(NOT_FOUND);
-      }
-    }).catch(err => {
-      console.log(err);
-      res.sendStatus(ERROR);
-    })
-});
-
-app.get("/launchpads/edit/", (req, res) => {
-  //Make an empty copy
-  elem = {id: "", full_name: "", details: "", status: "", location: ""};
-  res.render('launchpads/edit', {
-    launchpad: elem,
-    method: "post",
-    isLoggedIn: req.user
-  })
-});
-
 // Signup request
 app.route('/signup')
  .post((req, res) => {
@@ -213,6 +128,94 @@ app.route('/signup')
 app.get('/logout', (req, res) => {
   res.clearCookie('user');
   res.redirect('/');
+});
+
+// Browser editing form for vehicle creation
+app.get("/vehicles/create", (req, res) => {
+  //Make an empty copy
+  elem = {id: "", name: "", cost_per_launch: "", success_rate_pct: "", first_flight: "", active: "", description: ""};
+  res.render('vehicles/edit', {
+    vehicle: elem,
+    method: "post",
+    isLoggedIn: req.user
+  })
+});
+
+// Browser editing form for a vehicle
+app.get("/vehicles/:id/edit", (req, res) => {
+  getVehicles(req.user, req.params.id).then(elem => {
+    if (elem) {
+     res.render('vehicles/edit', {
+       vehicle: elem,
+       method: "put",
+       isLoggedIn: req.user
+     })
+   } else {
+    res.sendStatus(NOT_FOUND);
+  }
+}).catch(err => {
+  console.log(err);
+  res.sendStatus(ERROR);
+})
+});
+
+// Browser editing form for launch creation
+app.get("/launches/create", (req, res) => {
+  //Make an empty copy
+  elem = {flight_number: "", details: "", rocket: "", launch_site: "", launch_date_local: "", launch_success: ""};
+  res.render('launches/edit', {
+    launch: elem,
+    method: "post",
+    isLoggedIn: req.user
+  })
+});
+
+//Browser editing form for a launch
+app.get("/launches/:id/edit", (req, res) => {
+  getLaunches(req.user, Number(req.params.id)).then(elem => {
+    if (elem) {
+      res.render('launches/edit', {
+        launch: elem,
+        method: "put",
+        isLoggedIn: req.user
+      })
+    } else {
+      res.sendStatus(NOT_FOUND);
+    }
+  }).catch(err => {
+    console.log(err);
+    res.sendStatus(ERROR);
+  })
+});
+
+//Browser editing form for launchpad creation
+app.get("/launchpads/create", (req, res) => {
+  //Make an empty copy
+  elem = {id: "", full_name: "", details: "", status: "", location: ""};
+  res.render('launchpads/edit', {
+    launchpad: elem,
+    method: "post",
+    isLoggedIn: req.user
+  })
+});
+
+//Browser editing form for a launchpad
+app.get("/launchpads/:id/edit", (req, res) => {
+  getLaunchpads(req.user, req.params.id).then(elem => {
+    if (elem) {
+      res.render('launchpads/edit', {
+        launchpad: elem,
+        method: "put",
+        isLoggedIn: req.user
+      })
+    } else {
+      console.log("%s!", req.params.id)
+      res.sendStatus(NOT_FOUND);
+    }
+  }).catch(err => {
+    console.log(err);
+    res.sendStatus(ERROR);
+  })
 });
 
 // Vehicles collection
